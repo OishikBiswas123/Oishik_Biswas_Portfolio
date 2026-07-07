@@ -1,6 +1,7 @@
 import { HeroSection } from "@/components/hero-section"
 import { StatsStrip } from "@/components/stats-strip"
 import { WhatIDo } from "@/components/what-i-do"
+import { BeyondScreen } from "@/components/beyond-screen"
 import { ContactForm } from "@/components/contact-form"
 import { StatusBar } from "@/components/status-bar"
 import { ProjectCard } from "@/components/project-card"
@@ -31,6 +32,8 @@ export default function Home() {
       </section>
 
       <WhatIDo />
+
+      <BeyondScreen />
 
       <section id="contact">
         <div className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
