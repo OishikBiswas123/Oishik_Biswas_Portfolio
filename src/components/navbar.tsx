@@ -5,22 +5,38 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { SkyToggle } from "@/components/sky-toggle"
+import { Logo } from "@/components/logo"
+import { PfpSwitcher } from "@/components/pfp-switcher"
 import { Menu, X } from "lucide-react"
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/projects", label: "Projects" },
-  { href: "/about", label: "About" },
+  { href: "/#projects", label: "Projects" },
   { href: "/gallery", label: "Gallery" },
   { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact" },
+  { href: "/#contact", label: "Contact" },
 ]
 
 export function Navbar() {
   const pathname = usePathname()
+  const [hash, setHash] = useState("")
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  useEffect(() => {
+    const onHashChange = () => setHash(window.location.hash)
+    setHash(window.location.hash)
+    window.addEventListener("hashchange", onHashChange)
+    return () => window.removeEventListener("hashchange", onHashChange)
+  }, [])
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/" && !hash
+    if (!href.includes("#")) return pathname === href
+    const [p, h] = href.split("#")
+    return pathname === p && hash === `#${h}`
+  }
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -42,12 +58,15 @@ export function Navbar() {
       )}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link
-          href="/"
-          className="text-lg font-bold tracking-tight text-text-primary"
-        >
-          OB
-        </Link>
+        <div className="flex items-center gap-3">
+          <PfpSwitcher />
+          <Link
+            href="/"
+            className="hover:opacity-80 transition-opacity"
+          >
+            <Logo />
+          </Link>
+        </div>
 
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
@@ -56,7 +75,7 @@ export function Navbar() {
               href={link.href}
               className={cn(
                 "text-sm uppercase tracking-widest transition-colors hover:text-text-primary",
-                pathname === link.href
+                isActive(link.href)
                   ? "text-text-primary font-medium"
                   : "text-text-muted"
               )}
@@ -64,7 +83,7 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          <ThemeToggle />
+          <SkyToggle />
         </div>
 
         <button
@@ -91,7 +110,7 @@ export function Navbar() {
                   href={link.href}
                   className={cn(
                     "text-sm uppercase tracking-widest transition-colors",
-                    pathname === link.href
+                    isActive(link.href)
                       ? "text-text-primary font-medium"
                       : "text-text-muted"
                   )}
@@ -100,7 +119,7 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="pt-2">
-                <ThemeToggle />
+                <SkyToggle />
               </div>
             </div>
           </motion.div>

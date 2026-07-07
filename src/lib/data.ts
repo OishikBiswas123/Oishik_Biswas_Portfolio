@@ -70,7 +70,35 @@ export const projects: Project[] = [
   },
 ]
 
-export const galleryItems: { src: string; alt: string; type: "image" | "video" }[] = []
+export const galleryItems: { src: string; alt: string; type: "image" | "video" }[] = [
+  { src: "/Gallery/oishik biswas (10).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/oishik biswas (11).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/oishik biswas (12).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/oishik biswas (13).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/oishik biswas (14).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/oishik biswas (15).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/oishik biswas (16).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/oishik biswas (2).jpeg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/Oishik Biswas (2).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/Oishik Biswas (3).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/Oishik biswas (4).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/Oishik Biswas (5).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/Oishik biswas (6).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/oishik biswas (7).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/oishik biswas (8).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/oishik biswas (9).jpg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/oishik biswas.jpeg", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/oishik biswas.JPG", alt: "Oishik Biswas", type: "image" },
+  { src: "/Gallery/Screenshot_2023_0309_223005.jpg", alt: "Screenshot", type: "image" },
+  { src: "/Gallery/oishik biswas at beach.mp4", alt: "Oishik Biswas at beach", type: "video" },
+  { src: "/Gallery/oishik biswas at dubai.mp4", alt: "Oishik Biswas at Dubai", type: "video" },
+  { src: "/Gallery/oishik biswas besabriya.mp4", alt: "Oishik Biswas Besabriya", type: "video" },
+  { src: "/Gallery/oishik biswas college performance.mp4", alt: "Oishik Biswas college performance", type: "video" },
+  { src: "/Gallery/oishik biswas dance.mp4", alt: "Oishik Biswas dance", type: "video" },
+  { src: "/Gallery/oishik biswas on stone dancing.mp4", alt: "Oishik Biswas dancing on stone", type: "video" },
+  { src: "/Gallery/oishik biswas reel.mp4", alt: "Oishik Biswas reel", type: "video" },
+  { src: "/Gallery/oishik biswas snowfall.mp4", alt: "Oishik Biswas snowfall", type: "video" },
+]
 
 export const skills = [
   "Unity",

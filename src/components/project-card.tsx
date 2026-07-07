@@ -13,11 +13,11 @@ export function ProjectCard({
     <Link
       href={`/projects/${project.slug}`}
       className={cn(
-        "group block border border-border-light hover:border-text-muted transition-colors",
+        "group block bg-white/10 dark:bg-white/5 backdrop-blur-2xl border border-white/20 rounded-3xl shadow-xl shadow-black/5 hover:bg-white/20 dark:hover:bg-white/10 transition-all overflow-hidden",
         featured ? "col-span-1" : "col-span-1"
       )}
     >
-      <div className="aspect-[16/10] bg-bg-muted overflow-hidden">
+      <div className="aspect-[16/10] overflow-hidden">
         {project.thumbnail ? (
           <img
             src={project.thumbnail}
@@ -59,7 +59,7 @@ export function ProjectCard({
           {project.techStack.slice(0, 3).map((tech) => (
             <span
               key={tech}
-              className="text-[11px] uppercase tracking-wider px-2 py-0.5 bg-bg-muted text-text-muted"
+              className="text-[11px] uppercase tracking-wider px-2 py-0.5 bg-white/20 dark:bg-white/10 text-text-secondary rounded-lg"
             >
               {tech}
             </span>
