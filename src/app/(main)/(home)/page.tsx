@@ -1,4 +1,5 @@
 import { HeroSection } from "@/components/hero-section"
+import { StatsStrip } from "@/components/stats-strip"
 import { AboutSection } from "@/components/about-section"
 import { ContactForm } from "@/components/contact-form"
 import { StatusBar } from "@/components/status-bar"
@@ -11,6 +12,8 @@ export default function Home() {
   return (
     <>
       <HeroSection />
+
+      <StatsStrip />
 
       <section id="projects">
         <div className="mx-auto max-w-6xl px-6 py-24">
