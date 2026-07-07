@@ -1,43 +1,75 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
+import { useEffect, useRef } from "react"
+import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion"
 
-const stats = [
-  { value: "10+", label: "Projects Completed" },
-  { value: "5+", label: "Technologies Explored" },
-  { value: "∞", label: "Curiosity Always Growing" },
-  { value: "100%", label: "Self-Learning" },
-  { value: "Always", label: "Building Something New" },
+interface CountStat {
+  type: "count"
+  value: number
+  suffix: string
+  label: string
+}
+
+interface TextStat {
+  type: "text"
+  display: string
+}
+
+type Stat = CountStat | TextStat
+
+const stats: Stat[] = [
+  { type: "count", value: 10, suffix: "+", label: "Projects Completed." },
+  { type: "count", value: 5, suffix: "+", label: "Technologies Explored." },
+  { type: "text", display: "∞ Curiosity Always Growing." },
+  { type: "count", value: 100, suffix: "%", label: "Self-Learning." },
+  { type: "text", display: "Always Building Something New." },
 ]
+
+function AnimatedNumber({ to, inView }: { to: number; inView: boolean }) {
+  const count = useMotionValue(0)
+  const display = useTransform(count, (v) => Math.round(v))
+
+  useEffect(() => {
+    if (inView) {
+      const controls = animate(count, to, { type: "spring", stiffness: 50, damping: 10 })
+      return () => controls.stop()
+    } else {
+      count.set(0)
+    }
+  }, [inView, to, count])
+
+  return <motion.span>{display}</motion.span>
+}
 
 export function StatsStrip() {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: "-80px" })
+  const inView = useInView(ref, { margin: "-80px" })
 
   return (
-    <div ref={ref} className="mx-auto max-w-5xl px-6 py-20 sm:py-28">
-      <div className="flex flex-wrap items-center justify-center gap-y-6">
+    <div ref={ref} className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
+      <div className="flex flex-wrap items-baseline justify-center gap-x-6 gap-y-4">
         {stats.map((stat, i) => (
-          <motion.div
-            key={stat.value}
-            initial={{ opacity: 0, y: 24 }}
-            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: i * 0.12 }}
-            className="flex items-center gap-6"
+          <motion.span
+            key={i}
+            initial={{ opacity: 0, y: 30 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={
+              inView
+                ? { duration: 0.7, ease: "easeOut", delay: i * 0.15 }
+                : { duration: 0.35, ease: "easeOut" }
+            }
           >
-            {i > 0 && (
-              <div className="hidden sm:block w-px h-10 bg-white/10" />
-            )}
-            <div className="flex flex-col items-center px-4 min-w-[120px]">
-              <span className="text-3xl sm:text-4xl font-bold text-text-primary leading-none">
-                {stat.value}
-              </span>
-              <span className="mt-1.5 text-xs sm:text-sm text-text-muted leading-tight text-center whitespace-nowrap">
-                {stat.label}
-              </span>
-            </div>
-          </motion.div>
+            <span className="text-5xl sm:text-6xl lg:text-7xl font-black text-text-primary leading-none tracking-tighter whitespace-nowrap">
+              {stat.type === "count" ? (
+                <>
+                  <AnimatedNumber to={stat.value} inView={inView} />
+                  {stat.suffix} {stat.label}
+                </>
+              ) : (
+                stat.display
+              )}
+            </span>
+          </motion.span>
         ))}
       </div>
     </div>
