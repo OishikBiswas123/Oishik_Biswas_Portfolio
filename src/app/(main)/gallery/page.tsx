@@ -5,7 +5,7 @@ import { motion, useMotionValue, animate } from "framer-motion"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { PhoneReel } from "@/components/phone-reel"
 import { galleryItems } from "@/lib/data"
-import { onLenisScroll } from "@/components/smooth-scroll-provider"
+import { onLenisScroll, scrollToLenis } from "@/components/smooth-scroll-provider"
 
 export default function GalleryPage() {
   const [isRotated, setIsRotated] = useState(false)
@@ -36,14 +36,17 @@ export default function GalleryPage() {
   useEffect(() => {
     if (isRotated) {
       const gapEl = document.querySelector("[data-gallery-gap]")
-      if (gapEl) phoneTop.set(gapEl.getBoundingClientRect().top)
+      if (gapEl) {
+        const rect = gapEl.getBoundingClientRect()
+        phoneTop.set(rect.top + rect.height / 2)
+      }
 
       requestAnimationFrame(() => {
         const gapEl = document.querySelector("[data-gallery-gap]")
         if (gapEl) {
           const rect = gapEl.getBoundingClientRect()
-          const target = window.scrollY + rect.top - window.innerHeight / 2
-          window.scrollTo({ top: target, behavior: "smooth" })
+          const target = window.scrollY + rect.top + rect.height / 2 - window.innerHeight / 2
+          scrollToLenis(target, { duration: 1.2 })
         }
       })
     } else {
@@ -60,7 +63,10 @@ export default function GalleryPage() {
 
     const unsub = onLenisScroll(() => {
       const gapEl = document.querySelector("[data-gallery-gap]")
-      if (gapEl) phoneTop.set(gapEl.getBoundingClientRect().top)
+      if (gapEl) {
+        const rect = gapEl.getBoundingClientRect()
+        phoneTop.set(rect.top + rect.height / 2)
+      }
     })
 
     return unsub

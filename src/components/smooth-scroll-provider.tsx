@@ -10,6 +10,10 @@ export function getLenisScroll() {
   return lenisInstance?.scroll ?? 0
 }
 
+export function scrollToLenis(target: number, options?: { duration?: number }) {
+  lenisInstance?.scrollTo(target, { duration: options?.duration ?? 1 })
+}
+
 export function onLenisScroll(fn: (scroll: number) => void) {
   listeners.add(fn)
   return () => {
