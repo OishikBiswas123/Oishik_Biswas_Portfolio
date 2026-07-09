@@ -51,9 +51,9 @@ export default function GalleryPage() {
       })
     } else {
       animate(phoneTop, window.innerHeight / 2, {
-        type: "spring",
-        stiffness: 80,
-        damping: 15,
+        type: "tween",
+        duration: 0.75,
+        ease: "easeInOut",
       })
     }
   }, [isRotated, phoneTop])
@@ -131,8 +131,8 @@ export default function GalleryPage() {
         }}
         style={{ top: phoneTop }}
         transition={{
-          left: { type: "spring", stiffness: 80, damping: 15 },
-          x: { type: "spring", stiffness: 80, damping: 15 },
+          left: { type: "tween", duration: 0.75, ease: "easeInOut" },
+          x: { type: "tween", duration: 0.75, ease: "easeInOut" },
         }}
       >
         <PhoneReel {...phoneProps} />

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect, useCallback } from "react"
+import { createPortal } from "react-dom"
 import { motion } from "framer-motion"
 import { Volume2, VolumeX, Lock } from "lucide-react"
 
@@ -46,6 +47,9 @@ export function PhoneReel({
   const isRotatedRef = useRef(isRotated)
   isRotatedRef.current = isRotated
   const lastTransition = useRef(0)
+  const [showOverlay, setShowOverlay] = useState(false)
+  const [hideContent, setHideContent] = useState(false)
+
   const scrollToNextRef = useRef<(dir: number) => void>(() => {})
 
   scrollToNextRef.current = (direction: number) => {
@@ -64,6 +68,18 @@ export function PhoneReel({
     isAnimating.current = true
     isSnapping.current = true
 
+    videoRefs.current.forEach((el) => {
+      if (el) { el.pause(); el.currentTime = 0 }
+    })
+    const leavingLandscape = isRotatedRef.current && newIdx !== ROTATED_INDEX
+    if (!leavingLandscape) {
+      const targetEl = videoRefs.current[newIdx]
+      if (targetEl) {
+        targetEl.currentTime = 0
+        targetEl.play().catch(() => {})
+      }
+    }
+
     const start = performance.now()
     const duration = 400
 
@@ -81,10 +97,54 @@ export function PhoneReel({
       } else {
         isAnimating.current = false
         isSnapping.current = false
+        const finalIdx = Math.round(to / el.clientHeight)
+        processIndexChange(finalIdx)
       }
     }
 
     requestAnimationFrame(step)
+  }
+
+  const processIndexChange = (index: number) => {
+    const el = reelRef.current
+    if (!el) return
+    const currIdx = currentIndexRef.current
+    const rotated = isRotatedRef.current
+    if (index === currIdx) return
+    if (index === CLONE_LEADING) {
+      isSnapping.current = true
+      el.scrollTop = ROTATED_INDEX * el.clientHeight
+      onIndexChange(ROTATED_INDEX)
+      if (!rotated) {
+        setHideContent(true)
+        onRotate(true)
+        setTimeout(() => { setHideContent(false); setShowOverlay(true) }, 800)
+      }
+      requestAnimationFrame(() => { isSnapping.current = false })
+    } else if (index === CLONE_TRAILING) {
+      isSnapping.current = true
+      el.scrollTop = REAL_FIRST * el.clientHeight
+      onIndexChange(REAL_FIRST)
+      if (rotated) {
+        setShowOverlay(false)
+        setHideContent(true)
+        setTimeout(() => onRotate(false), 50)
+        setTimeout(() => setHideContent(false), 850)
+      }
+      requestAnimationFrame(() => { isSnapping.current = false })
+    } else {
+      onIndexChange(index)
+      if (index === ROTATED_INDEX && !rotated) {
+        setHideContent(true)
+        onRotate(true)
+        setTimeout(() => { setHideContent(false); setShowOverlay(true) }, 800)
+      } else if (index !== ROTATED_INDEX && rotated) {
+        setShowOverlay(false)
+        setHideContent(true)
+        setTimeout(() => onRotate(false), 50)
+        setTimeout(() => setHideContent(false), 850)
+      }
+    }
   }
 
   const [isMuted, setIsMuted] = useState(false)
@@ -130,8 +190,13 @@ export function PhoneReel({
     initDone.current = false
     onIndexChange(0)
     if (isRotated) {
-      onRotate(false)
-      setTimeout(() => onLockChange(true), 600)
+      setShowOverlay(false)
+      setHideContent(true)
+      setTimeout(() => onRotate(false), 50)
+      setTimeout(() => {
+        setHideContent(false)
+        onLockChange(true)
+      }, 850)
     } else {
       onLockChange(true)
     }
@@ -153,7 +218,7 @@ export function PhoneReel({
     videoRefs.current.forEach((el, i) => {
       if (!el) return
       if (i === currentIndex) {
-        if (!pausedByUser.current.has(i)) {
+        if (!pausedByUser.current.has(i) && !hideContent) {
           el.play().catch(() => {})
         }
       } else {
@@ -186,11 +251,9 @@ export function PhoneReel({
   useEffect(() => {
     if (!locked && reelRef.current && !initDone.current) {
       initDone.current = true
-      const target = currentIndex === 0
-        ? REAL_FIRST * reelRef.current.clientHeight
-        : currentIndex * reelRef.current.clientHeight
-      reelRef.current.scrollTop = target
-      if (currentIndex === 0) onIndexChange(REAL_FIRST)
+      const idx = currentIndex === 0 ? REAL_FIRST : currentIndex
+      reelRef.current.scrollTop = idx * reelRef.current.clientHeight
+      processIndexChange(idx)
     }
   }, [locked])
 
@@ -200,35 +263,8 @@ export function PhoneReel({
 
     const onScroll = () => {
       if (isSnapping.current) return
-
       const index = Math.round(el.scrollTop / el.clientHeight)
-      const currIdx = currentIndexRef.current
-      const rotated = isRotatedRef.current
-
-      if (index !== currIdx) {
-        if (Date.now() - lastTransition.current < 1000) return
-        lastTransition.current = Date.now()
-        if (index === CLONE_LEADING) {
-          isSnapping.current = true
-          el.scrollTop = ROTATED_INDEX * el.clientHeight
-          onIndexChange(ROTATED_INDEX)
-          if (!rotated) onRotate(true)
-          requestAnimationFrame(() => { isSnapping.current = false })
-        } else if (index === CLONE_TRAILING) {
-          isSnapping.current = true
-          el.scrollTop = REAL_FIRST * el.clientHeight
-          onIndexChange(REAL_FIRST)
-          if (rotated) onRotate(false)
-          requestAnimationFrame(() => { isSnapping.current = false })
-        } else {
-          onIndexChange(index)
-          if (index === ROTATED_INDEX && !rotated) {
-            onRotate(true)
-          } else if (index !== ROTATED_INDEX && rotated) {
-            onRotate(false)
-          }
-        }
-      }
+      processIndexChange(index)
     }
 
     el.addEventListener("scroll", onScroll, { passive: true })
@@ -283,7 +319,7 @@ export function PhoneReel({
 
   useEffect(() => {
     const el = overlayRef.current
-    if (!el) return
+    if (!el || !showOverlay) return
     const onWheel = (e: WheelEvent) => {
       scrollToNextRef.current(e.deltaY > 0 ? 1 : -1)
       e.preventDefault()
@@ -318,7 +354,19 @@ export function PhoneReel({
       el.removeEventListener("touchmove", onTouchMove)
       el.removeEventListener("touchend", onTouchEnd)
     }
-  }, [isRotated])
+  }, [showOverlay])
+
+  const prevHideContent = useRef(hideContent)
+  useEffect(() => {
+    if (prevHideContent.current && !hideContent) {
+      const el = videoRefs.current[currentIndexRef.current]
+      if (el && !pausedByUser.current.has(currentIndexRef.current)) {
+        el.currentTime = 0
+        el.play().catch(() => {})
+      }
+    }
+    prevHideContent.current = hideContent
+  }, [hideContent])
 
   return (
     <>
@@ -326,7 +374,7 @@ export function PhoneReel({
         ref={phoneRef}
         className="relative shrink-0"
         animate={{ rotate: isRotated ? 90 : 0 }}
-        transition={{ type: "spring", stiffness: 80, damping: 15 }}
+        transition={{ type: "tween", duration: 0.75, ease: "easeInOut" }}
         style={{
           transformOrigin: "center center",
           width: PHONE_W,
@@ -373,7 +421,7 @@ export function PhoneReel({
             <div
               ref={reelRef}
               className="phone-reel w-full h-full"
-              style={{ overflow: "hidden" }}
+              style={{ overflowY: "auto", overflowX: "hidden", scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
             {allVideos.map((video, i) => (
               <div
@@ -381,8 +429,8 @@ export function PhoneReel({
                 className="snap-start w-full h-full flex-shrink-0 relative bg-black"
                 onClick={() => togglePlay(i)}
               >
-                {video.isHorizontal && isRotated ? (
-                  <div className="w-full h-full" />
+                {video.isHorizontal && (hideContent || showOverlay) ? (
+                  <div className="w-full h-full bg-black" />
                 ) : (
                   <video
                     src={video.src}
@@ -405,6 +453,10 @@ export function PhoneReel({
         >
           <div className="w-[50px] h-[5px] bg-[#1a1a1a] rounded-full" />
         </div>
+
+        {hideContent && (
+          <div className="absolute inset-0 bg-black z-30 pointer-events-none" />
+        )}
       </motion.div>
 
       {!locked && (
@@ -455,16 +507,12 @@ export function PhoneReel({
         </>
       )}
 
-      {isRotated && !locked && (
+      {showOverlay && !locked && typeof document !== "undefined" && createPortal(
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
           ref={overlayRef}
           className="pointer-events-auto overflow-hidden"
           style={{
-            position: "absolute",
+            position: "fixed",
             width: PHONE_H,
             height: PHONE_W,
             left: "50%",
@@ -496,12 +544,14 @@ export function PhoneReel({
             src={horizontalVideo.src}
             className="w-full h-full object-cover"
             style={{ pointerEvents: "auto" }}
+            autoPlay
             loop
             playsInline
             muted={isMuted}
             onClick={() => togglePlay(ROTATED_INDEX)}
           />
-        </motion.div>
+        </motion.div>,
+        document.body
       )}
     </>
   )
