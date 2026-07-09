@@ -37,13 +37,55 @@ export function PhoneReel({
   const pausedByUser = useRef(new Set<number>())
   const reelRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
+  const phoneRef = useRef<HTMLDivElement>(null)
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([])
   const isSnapping = useRef(false)
+  const isAnimating = useRef(false)
   const currentIndexRef = useRef(currentIndex)
   currentIndexRef.current = currentIndex
   const isRotatedRef = useRef(isRotated)
   isRotatedRef.current = isRotated
-  const lastWheelTime = useRef(0)
+  const lastTransition = useRef(0)
+  const scrollToNextRef = useRef<(dir: number) => void>(() => {})
+
+  scrollToNextRef.current = (direction: number) => {
+    if (!reelRef.current || isAnimating.current) return
+    if (Date.now() - lastTransition.current < 1000) return
+
+    const el = reelRef.current
+    const curIdx = Math.round(el.scrollTop / el.clientHeight)
+    const newIdx = Math.max(0, Math.min(curIdx + direction, allVideos.length - 1))
+    const from = el.scrollTop
+    const to = newIdx * el.clientHeight
+
+    if (Math.abs(from - to) < 1) return
+
+    lastTransition.current = Date.now()
+    isAnimating.current = true
+    isSnapping.current = true
+
+    const start = performance.now()
+    const duration = 400
+
+    const step = (now: number) => {
+      const elapsed = now - start
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+
+      if (reelRef.current) {
+        reelRef.current.scrollTop = from + (to - from) * eased
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(step)
+      } else {
+        isAnimating.current = false
+        isSnapping.current = false
+      }
+    }
+
+    requestAnimationFrame(step)
+  }
 
   const [isMuted, setIsMuted] = useState(false)
   const [time, setTime] = useState("")
@@ -164,6 +206,8 @@ export function PhoneReel({
       const rotated = isRotatedRef.current
 
       if (index !== currIdx) {
+        if (Date.now() - lastTransition.current < 1000) return
+        lastTransition.current = Date.now()
         if (index === CLONE_LEADING) {
           isSnapping.current = true
           el.scrollTop = ROTATED_INDEX * el.clientHeight
@@ -192,27 +236,94 @@ export function PhoneReel({
   }, [onRotate, locked, REAL_FIRST, ROTATED_INDEX, CLONE_LEADING, CLONE_TRAILING, onIndexChange])
 
   useEffect(() => {
-    const el = overlayRef.current
-    if (!el) return
-    const handler = (e: WheelEvent) => {
-      const now = Date.now()
-      if (now - lastWheelTime.current < 400) return
-      lastWheelTime.current = now
-      if (reelRef.current) {
-        const direction = e.deltaY > 0 ? 1 : -1
-        const curIdx = Math.round(reelRef.current.scrollTop / reelRef.current.clientHeight)
-        const newIdx = Math.max(0, curIdx + direction)
-        reelRef.current.scrollTop = newIdx * reelRef.current.clientHeight
+    const phone = phoneRef.current
+    if (!phone || locked) return
+
+    const onWheel = (e: WheelEvent) => {
+      scrollToNextRef.current(e.deltaY > 0 ? 1 : -1)
+      e.preventDefault()
+      e.stopPropagation()
+    }
+
+    let touchStartY = 0
+    let touchSwiping = false
+
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY
+      touchSwiping = false
+    }
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (Math.abs(e.touches[0].clientY - touchStartY) > 10) {
+        touchSwiping = true
         e.preventDefault()
       }
     }
-    el.addEventListener("wheel", handler, { passive: false })
-    return () => el.removeEventListener("wheel", handler)
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (!touchSwiping) return
+      const dy = e.changedTouches[0].clientY - touchStartY
+      if (Math.abs(dy) > 30) {
+        scrollToNextRef.current(dy < 0 ? 1 : -1)
+      }
+    }
+
+    phone.addEventListener("wheel", onWheel, { passive: false })
+    phone.addEventListener("touchstart", onTouchStart, { passive: true })
+    phone.addEventListener("touchmove", onTouchMove, { passive: false })
+    phone.addEventListener("touchend", onTouchEnd, { passive: true })
+
+    return () => {
+      phone.removeEventListener("wheel", onWheel)
+      phone.removeEventListener("touchstart", onTouchStart)
+      phone.removeEventListener("touchmove", onTouchMove)
+      phone.removeEventListener("touchend", onTouchEnd)
+    }
+  }, [locked])
+
+  useEffect(() => {
+    const el = overlayRef.current
+    if (!el) return
+    const onWheel = (e: WheelEvent) => {
+      scrollToNextRef.current(e.deltaY > 0 ? 1 : -1)
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    let touchStartY = 0
+    let touchSwiping = false
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY
+      touchSwiping = false
+    }
+    const onTouchMove = (e: TouchEvent) => {
+      if (Math.abs(e.touches[0].clientY - touchStartY) > 10) {
+        touchSwiping = true
+        e.preventDefault()
+      }
+    }
+    const onTouchEnd = (e: TouchEvent) => {
+      if (!touchSwiping) return
+      const dy = e.changedTouches[0].clientY - touchStartY
+      if (Math.abs(dy) > 30) {
+        scrollToNextRef.current(dy < 0 ? 1 : -1)
+      }
+    }
+    el.addEventListener("wheel", onWheel, { passive: false })
+    el.addEventListener("touchstart", onTouchStart, { passive: true })
+    el.addEventListener("touchmove", onTouchMove, { passive: false })
+    el.addEventListener("touchend", onTouchEnd, { passive: true })
+    return () => {
+      el.removeEventListener("wheel", onWheel)
+      el.removeEventListener("touchstart", onTouchStart)
+      el.removeEventListener("touchmove", onTouchMove)
+      el.removeEventListener("touchend", onTouchEnd)
+    }
   }, [isRotated])
 
   return (
     <>
       <motion.div
+        ref={phoneRef}
         className="relative shrink-0"
         animate={{ rotate: isRotated ? 90 : 0 }}
         transition={{ type: "spring", stiffness: 80, damping: 15 }}
@@ -261,9 +372,8 @@ export function PhoneReel({
             <style>{`.phone-reel::-webkit-scrollbar { display: none; }`}</style>
             <div
               ref={reelRef}
-              onWheel={(e) => e.stopPropagation()}
-              className="phone-reel w-full h-full snap-y snap-mandatory"
-              style={{ overflowY: "auto", overflowX: "hidden", scrollbarWidth: "none", msOverflowStyle: "none" }}
+              className="phone-reel w-full h-full"
+              style={{ overflow: "hidden" }}
             >
             {allVideos.map((video, i) => (
               <div
