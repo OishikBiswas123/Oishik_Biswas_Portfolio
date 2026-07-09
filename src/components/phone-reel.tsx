@@ -19,6 +19,7 @@ interface PhoneReelProps {
   onLockChange: (locked: boolean) => void
   currentIndex: number
   onIndexChange: (index: number) => void
+  isMobile?: boolean
 }
 
 const PHONE_W = 280
@@ -33,6 +34,7 @@ export function PhoneReel({
   onLockChange,
   currentIndex,
   onIndexChange,
+  isMobile,
 }: PhoneReelProps) {
   const pausedByUser = useRef(new Set<number>())
   const reelRef = useRef<HTMLDivElement>(null)
@@ -467,21 +469,26 @@ export function PhoneReel({
             className="flex items-center justify-center cursor-pointer"
             style={{
               position: "absolute",
-              width: 40,
-              height: 40,
-              borderRadius: 12,
-              background: "rgba(255,255,255,0.1)",
+              width: isMobile ? 28 : 40,
+              height: isMobile ? 28 : 40,
+              borderRadius: isMobile ? 8 : 12,
+              background: "rgba(255,255,255,0.15)",
               backdropFilter: "blur(16px)",
               WebkitBackdropFilter: "blur(16px)",
               border: "1px solid rgba(255,255,255,0.2)",
               color: "white",
               zIndex: 70,
-              left: isRotated ? -(PHONE_H / 2 - PHONE_W / 2 + 56) : PHONE_W + 16,
-              top: isRotated ? "calc(50% - 52px)" : 96,
-              transform: isRotated ? "translateY(-50%)" : "none",
+              ...(isMobile
+                ? { top: 8, right: 8, left: "auto", bottom: "auto", transform: "none" }
+                : {
+                    left: isRotated ? -(PHONE_H / 2 - PHONE_W / 2 + 56) : PHONE_W + 16,
+                    top: isRotated ? "calc(50% - 52px)" : 96,
+                    transform: isRotated ? "translateY(-50%)" : "none",
+                  }
+              ),
             }}
           >
-            {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+            {isMuted ? <VolumeX size={isMobile ? 14 : 18} /> : <Volume2 size={isMobile ? 14 : 18} />}
           </motion.button>
 
           <motion.button
@@ -489,21 +496,26 @@ export function PhoneReel({
             className="flex items-center justify-center cursor-pointer"
             style={{
               position: "absolute",
-              width: 40,
-              height: 40,
-              borderRadius: 12,
-              background: "rgba(255,255,255,0.1)",
+              width: isMobile ? 28 : 40,
+              height: isMobile ? 28 : 40,
+              borderRadius: isMobile ? 8 : 12,
+              background: "rgba(255,255,255,0.15)",
               backdropFilter: "blur(16px)",
               WebkitBackdropFilter: "blur(16px)",
               border: "1px solid rgba(255,255,255,0.2)",
               color: "white",
               zIndex: 70,
-              left: isRotated ? -(PHONE_H / 2 - PHONE_W / 2 + 56) : PHONE_W + 16,
-              top: isRotated ? "calc(50% - 4px)" : 144,
-              transform: isRotated ? "translateY(-50%)" : "none",
+              ...(isMobile
+                ? { top: 44, right: 8, left: "auto", bottom: "auto", transform: "none" }
+                : {
+                    left: isRotated ? -(PHONE_H / 2 - PHONE_W / 2 + 56) : PHONE_W + 16,
+                    top: isRotated ? "calc(50% - 4px)" : 144,
+                    transform: isRotated ? "translateY(-50%)" : "none",
+                  }
+              ),
             }}
           >
-            <Lock size={18} />
+            <Lock size={isMobile ? 14 : 18} />
           </motion.button>
         </>
       )}

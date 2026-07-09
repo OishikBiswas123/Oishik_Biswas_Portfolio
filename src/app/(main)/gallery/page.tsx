@@ -14,6 +14,7 @@ export default function GalleryPage() {
   const [phoneLeft, setPhoneLeft] = useState(0)
   const contentRef = useRef<HTMLDivElement>(null)
   const phoneTop = useMotionValue(0)
+  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 768)
 
   const updatePhoneLeft = useCallback(() => {
     if (contentRef.current) {
@@ -34,21 +35,30 @@ export default function GalleryPage() {
   }, [isRotated, updatePhoneLeft])
 
   useEffect(() => {
-    if (isRotated) {
-      const gapEl = document.querySelector("[data-gallery-gap]")
-      if (gapEl) {
-        const rect = gapEl.getBoundingClientRect()
-        phoneTop.set(rect.top + rect.height / 2)
-      }
+    const mq = window.matchMedia("(max-width: 767px)")
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener("change", handler)
+    return () => mq.removeEventListener("change", handler)
+  }, [])
 
-      requestAnimationFrame(() => {
+  useEffect(() => {
+    if (isRotated) {
+      if (!isMobile) {
         const gapEl = document.querySelector("[data-gallery-gap]")
         if (gapEl) {
           const rect = gapEl.getBoundingClientRect()
-          const target = window.scrollY + rect.top + rect.height / 2 - window.innerHeight / 2
-          scrollToLenis(target, { duration: 1.2 })
+          phoneTop.set(rect.top + rect.height / 2)
         }
-      })
+
+        requestAnimationFrame(() => {
+          const gapEl = document.querySelector("[data-gallery-gap]")
+          if (gapEl) {
+            const rect = gapEl.getBoundingClientRect()
+            const target = window.scrollY + rect.top + rect.height / 2 - window.innerHeight / 2
+            scrollToLenis(target, { duration: 1.2 })
+          }
+        })
+      }
     } else {
       animate(phoneTop, window.innerHeight / 2, {
         type: "tween",
@@ -56,10 +66,10 @@ export default function GalleryPage() {
         ease: "easeInOut",
       })
     }
-  }, [isRotated, phoneTop])
+  }, [isRotated, phoneTop, isMobile])
 
   useEffect(() => {
-    if (!isRotated) return
+    if (!isRotated || isMobile) return
 
     const unsub = onLenisScroll(() => {
       const gapEl = document.querySelector("[data-gallery-gap]")
@@ -70,7 +80,7 @@ export default function GalleryPage() {
     })
 
     return unsub
-  }, [isRotated, phoneTop])
+  }, [isRotated, phoneTop, isMobile])
 
   const verticalVideos = useMemo(
     () =>
@@ -88,6 +98,43 @@ export default function GalleryPage() {
     [],
   )
 
+  const phoneScale = useMemo(() => {
+    if (!isMobile) return 1
+    if (isRotated) return 0.3
+    return phoneLocked ? 0.3 : 0.5
+  }, [isMobile, isRotated, phoneLocked])
+
+  const animateTarget = useMemo((): any => {
+    if (!isMobile) {
+      return {
+        left: isRotated ? "50%" : `${phoneLeft}px`,
+        x: isRotated ? "-50%" : 0,
+        y: "-50%",
+        scale: 1,
+      }
+    }
+    if (isRotated) return { scale: phoneScale, translateX: "-50%", translateY: "0%" }
+    return { scale: phoneScale }
+  }, [isMobile, isRotated, phoneLeft, phoneScale])
+
+  const positionStyle = useMemo((): any => {
+    if (!isMobile) return { top: phoneTop }
+    if (isRotated) return { bottom: 0, left: "50%", transformOrigin: "center center" }
+    return { bottom: 100, right: 16, transformOrigin: "bottom right" }
+  }, [isMobile, isRotated, phoneTop])
+
+  const mobileTransition = useMemo((): any => {
+    if (!isMobile) {
+      return {
+        left: { type: "tween", duration: 0.75, ease: "easeInOut" },
+        x: { type: "tween", duration: 0.75, ease: "easeInOut" },
+      }
+    }
+    return { scale: { type: "spring", stiffness: 350, damping: 25 }, translateX: { type: "tween", duration: 0.4, ease: "easeInOut" } }
+  }, [isMobile])
+
+  const gridRotated = isMobile ? false : isRotated
+
   const phoneProps = {
     verticalVideos,
     horizontalVideo,
@@ -97,6 +144,7 @@ export default function GalleryPage() {
     onLockChange: setPhoneLocked,
     currentIndex: phoneIndex,
     onIndexChange: setPhoneIndex,
+    isMobile,
   }
 
   return (
@@ -116,7 +164,7 @@ export default function GalleryPage() {
           <div ref={contentRef}>
             <GalleryGrid
               items={galleryItems}
-              isRotated={isRotated}
+              isRotated={gridRotated}
             />
           </div>
         </div>
@@ -124,16 +172,9 @@ export default function GalleryPage() {
 
       <motion.div
         className="fixed z-50"
-        animate={{
-          left: isRotated ? "50%" : `${phoneLeft}px`,
-          x: isRotated ? "-50%" : 0,
-          y: "-50%",
-        }}
-        style={{ top: phoneTop }}
-        transition={{
-          left: { type: "tween", duration: 0.75, ease: "easeInOut" },
-          x: { type: "tween", duration: 0.75, ease: "easeInOut" },
-        }}
+        animate={animateTarget}
+        style={positionStyle}
+        transition={mobileTransition}
       >
         <PhoneReel {...phoneProps} />
       </motion.div>
