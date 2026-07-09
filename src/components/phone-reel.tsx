@@ -150,11 +150,14 @@ export function PhoneReel({
           </motion.span>
         </motion.button>
       ) : (
-        <div
-          ref={reelRef}
-          onWheel={(e) => e.stopPropagation()}
-          className="w-full h-full overflow-y-auto snap-y snap-mandatory scrollbar-hide"
-        >
+        <>
+          <style>{`.phone-reel::-webkit-scrollbar { display: none; }`}</style>
+          <div
+            ref={reelRef}
+            onWheel={(e) => e.stopPropagation()}
+            className="phone-reel w-full h-full snap-y snap-mandatory"
+            style={{ overflowY: "auto", overflowX: "hidden", scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
           {allVideos.map((video, i) => (
             <div
               key={i}
@@ -190,7 +193,8 @@ export function PhoneReel({
               )}
             </div>
           ))}
-        </div>
+          </div>
+        </>
       )}
 
       <div

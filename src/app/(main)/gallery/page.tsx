@@ -1,9 +1,11 @@
 "use client"
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react"
+import { motion, useMotionValue, animate } from "framer-motion"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { PhoneReel } from "@/components/phone-reel"
 import { galleryItems } from "@/lib/data"
+import { onLenisScroll } from "@/components/smooth-scroll-provider"
 
 export default function GalleryPage() {
   const [isRotated, setIsRotated] = useState(false)
@@ -11,7 +13,7 @@ export default function GalleryPage() {
   const [phoneIndex, setPhoneIndex] = useState(0)
   const [phoneLeft, setPhoneLeft] = useState(0)
   const contentRef = useRef<HTMLDivElement>(null)
-  const inlineRef = useRef<HTMLDivElement>(null)
+  const phoneTop = useMotionValue(0)
 
   const updatePhoneLeft = useCallback(() => {
     if (contentRef.current) {
@@ -21,10 +23,11 @@ export default function GalleryPage() {
   }, [])
 
   useEffect(() => {
+    phoneTop.set(window.innerHeight / 2)
     updatePhoneLeft()
     window.addEventListener("resize", updatePhoneLeft)
     return () => window.removeEventListener("resize", updatePhoneLeft)
-  }, [updatePhoneLeft])
+  }, [updatePhoneLeft, phoneTop])
 
   useEffect(() => {
     requestAnimationFrame(updatePhoneLeft)
@@ -32,11 +35,36 @@ export default function GalleryPage() {
 
   useEffect(() => {
     if (isRotated) {
+      const gapEl = document.querySelector("[data-gallery-gap]")
+      if (gapEl) phoneTop.set(gapEl.getBoundingClientRect().top)
+
       requestAnimationFrame(() => {
-        inlineRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })
+        const gapEl = document.querySelector("[data-gallery-gap]")
+        if (gapEl) {
+          const rect = gapEl.getBoundingClientRect()
+          const target = window.scrollY + rect.top - window.innerHeight / 2
+          window.scrollTo({ top: target, behavior: "smooth" })
+        }
+      })
+    } else {
+      animate(phoneTop, window.innerHeight / 2, {
+        type: "spring",
+        stiffness: 80,
+        damping: 15,
       })
     }
-  }, [isRotated])
+  }, [isRotated, phoneTop])
+
+  useEffect(() => {
+    if (!isRotated) return
+
+    const unsub = onLenisScroll(() => {
+      const gapEl = document.querySelector("[data-gallery-gap]")
+      if (gapEl) phoneTop.set(gapEl.getBoundingClientRect().top)
+    })
+
+    return unsub
+  }, [isRotated, phoneTop])
 
   const verticalVideos = useMemo(
     () =>
@@ -78,35 +106,31 @@ export default function GalleryPage() {
           </p>
         </div>
 
-        {isRotated ? (
-          <div>
-            <GalleryGrid items={galleryItems} isRotated={true} mode="top" />
-            <div ref={inlineRef} className="flex items-center justify-center h-[280px] my-4">
-              <PhoneReel {...phoneProps} />
-            </div>
-            <GalleryGrid items={galleryItems} isRotated={true} mode="bottom" />
+        <div className={isRotated ? "" : "md:pr-[340px]"}>
+          <div ref={contentRef}>
+            <GalleryGrid
+              items={galleryItems}
+              isRotated={isRotated}
+            />
           </div>
-        ) : (
-          <div className="md:pr-[340px]">
-            <div ref={contentRef}>
-              <GalleryGrid items={galleryItems} isRotated={false} />
-            </div>
-          </div>
-        )}
+        </div>
       </div>
 
-      {!isRotated && (
-        <div
-          className="fixed z-50"
-          style={{
-            left: phoneLeft,
-            top: "50%",
-            transform: "translateY(-50%)",
-          }}
-        >
-          <PhoneReel {...phoneProps} />
-        </div>
-      )}
+      <motion.div
+        className="fixed z-50"
+        animate={{
+          left: isRotated ? "50%" : `${phoneLeft}px`,
+          x: isRotated ? "-50%" : 0,
+          y: "-50%",
+        }}
+        style={{ top: phoneTop }}
+        transition={{
+          left: { type: "spring", stiffness: 80, damping: 15 },
+          x: { type: "spring", stiffness: 80, damping: 15 },
+        }}
+      >
+        <PhoneReel {...phoneProps} />
+      </motion.div>
     </div>
   )
 }
