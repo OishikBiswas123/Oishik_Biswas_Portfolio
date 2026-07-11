@@ -17,8 +17,6 @@ export default function GalleryPage() {
   const [isMobile, setIsMobile] = useState(false)
   const [mounted, setMounted] = useState(false)
 
-  useEffect(() => setMounted(true), [])
-
   const updatePhoneLeft = useCallback(() => {
     if (contentRef.current) {
       const rect = contentRef.current.getBoundingClientRect()
@@ -27,6 +25,7 @@ export default function GalleryPage() {
   }, [])
 
   useEffect(() => {
+    setMounted(true)
     setIsMobile(window.innerWidth < 768)
     phoneTop.set(window.innerHeight / 2)
     updatePhoneLeft()
