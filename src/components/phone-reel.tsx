@@ -513,7 +513,7 @@ export function PhoneReel({
                   style={{
                     position: "absolute",
                     right: 10,
-                    bottom: 10,
+                    top: 10,
                     width: 36,
                     height: 36,
                     borderRadius: 10,
@@ -533,7 +533,7 @@ export function PhoneReel({
                   style={{
                     position: "absolute",
                     right: 10,
-                    bottom: 52,
+                    top: 52,
                     width: 36,
                     height: 36,
                     borderRadius: 10,
