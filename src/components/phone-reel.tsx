@@ -526,7 +526,9 @@ export function PhoneReel({
               color: "white",
               zIndex: 70,
               ...(isMobile
-                ? { top: 10, right: 10, left: "auto", bottom: "auto", transform: "none" }
+                ? isRotated
+                  ? { bottom: 10, right: 10, left: "auto", top: "auto", transform: "none" }
+                  : { top: 10, right: 10, left: "auto", bottom: "auto", transform: "none" }
                 : {
                     left: isRotated ? -(PHONE_H / 2 - PHONE_W / 2 + 56) : PHONE_W + 16,
                     top: isRotated ? "calc(50% - 52px)" : 96,
@@ -553,7 +555,9 @@ export function PhoneReel({
               color: "white",
               zIndex: 70,
               ...(isMobile
-                ? { top: 52, right: 10, left: "auto", bottom: "auto", transform: "none" }
+                ? isRotated
+                  ? { bottom: 52, right: 10, left: "auto", top: "auto", transform: "none" }
+                  : { top: 52, right: 10, left: "auto", bottom: "auto", transform: "none" }
                 : {
                     left: isRotated ? -(PHONE_H / 2 - PHONE_W / 2 + 56) : PHONE_W + 16,
                     top: isRotated ? "calc(50% - 4px)" : 144,
