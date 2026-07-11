@@ -38,21 +38,34 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="text-text-secondary leading-relaxed space-y-4">
-              <p>
-                I&apos;m Oishik Biswas — a developer who builds games, websites,
-                and interactive experiences. I work with Unity and C# for game
-                development, and Next.js with TypeScript for web projects.
+            <div className="text-text-primary leading-relaxed space-y-5">
+              <p className="text-base">
+                I&apos;m a self-taught product builder who takes ideas from concept
+                to live deployment — across mobile apps, web platforms, and
+                games. I own the full cycle: product design, UI/UX, frontend and
+                backend development, publishing on app stores, custom domain
+                setup with hosting, SEO optimization, and Google Business
+                profile creation. Every project gets treated like a real product
+                — planned, built, and delivered end-to-end.
               </p>
-              <p>
-                My work ranges from publishing games on the Play Store to
-                delivering complete client websites with custom branding.
-                I handle everything from concept to launch — planning, design,
-                development, and deployment.
+              <p className="text-base">
+                I build Android apps with real-time features and secure
+                authentication, develop and publish games using Unity, and
+                create responsive websites with clean interfaces backed by solid
+                server-side logic. I work with databases, APIs, real-time data
+                sync, and server deployment. On the creative side, I design
+                UI/UX, create brand identities, edit videos, and work in
+                Photoshop — handling both the visual and technical sides of a
+                product.
               </p>
-              <p>
-                Right now I&apos;m working on new projects and exploring what&apos;s
-                possible when you combine creativity with code.
+              <p className="text-base">
+                I use modern AI tools to build faster and ship cleaner work,
+                while continuously learning through Google AI, Anthropic, OpenAI
+                Academy, AWS Skill Builder, and DeepLearning.AI. I&apos;m actively
+                exploring cybersecurity and ethical hacking. Beyond building, I
+                bring project management, client communication, and a
+                product-minded approach to everything I do — the kind of person
+                who doesn&apos;t just write code, but ships products that work.
               </p>
             </div>
 
@@ -63,7 +76,7 @@ export default function AboutPage() {
 
           <div className="lg:col-span-2">
             <h2 className="text-xs uppercase tracking-[0.25em] text-text-muted mb-6">
-              Skills & Tools
+              What I Do
             </h2>
             <div className="flex flex-wrap gap-3">
               {skills.map((skill) => (

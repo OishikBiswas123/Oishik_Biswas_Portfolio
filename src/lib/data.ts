@@ -162,16 +162,18 @@ export const galleryItems: { src: string; alt: string; type: "image" | "video" }
 ]
 
 export const skills = [
-  "Unity",
-  "C#",
-  "Next.js",
-  "TypeScript",
-  "JavaScript",
-  "React",
-  "Tailwind CSS",
-  "HTML/CSS",
-  "Photoshop",
-  "Git",
+  "Product Design",
+  "AI-Assisted Development",
+  "Project Management",
+  "Client Communication",
+  "Unity Engine",
+  "Video Editing",
+  "Photoshop & Visual Design",
+  "SEO & Google Search Console",
+  "Google Business Profile",
+  "Domain & Hosting Setup",
+  "App Store Publishing",
+  "End-to-End Deployment",
 ]
 
 export const blogPosts: BlogPost[] = []
