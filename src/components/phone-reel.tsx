@@ -387,20 +387,21 @@ export function PhoneReel({
           boxShadow: locked
             ? "0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,0,0,0.1) inset"
             : "0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05) inset",
-          overflow: "hidden",
           background: locked ? "linear-gradient(180deg, #87CEEB 0%, #E8F4FD 80%, #ffffff 100%)" : "#000",
         }}
       >
         {locked ? (
-          <motion.button
-            onClick={handleUnlock}
-            className="w-full h-full flex flex-col items-center justify-between py-16 cursor-pointer select-none"
-            whileHover={{ scale: 1.02 }}
-            style={{
-              backgroundImage: "url(/meadow/medows.png)",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
+            <motion.button
+              onClick={handleUnlock}
+              className="w-full h-full flex flex-col items-center justify-between py-16 cursor-pointer select-none"
+              whileHover={{ scale: 1.02 }}
+              style={{
+                backgroundImage: "url(/meadow/medows.png)",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                borderRadius: 36,
+                overflow: "hidden",
+              }}
           >
             <div className="flex flex-col items-center gap-3 pt-4">
               <span className="text-5xl font-semibold text-white/90 tracking-wider drop-shadow-lg">
@@ -424,7 +425,7 @@ export function PhoneReel({
             <div
               ref={reelRef}
               className="phone-reel w-full h-full"
-              style={{ overflowY: "hidden", overflowX: "hidden", scrollbarWidth: "none", msOverflowStyle: "none" }}
+              style={{ overflow: "hidden", borderRadius: 36, scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
             {allVideos.map((video, i) => (
               <div
@@ -460,6 +461,52 @@ export function PhoneReel({
         {hideContent && (
           <div className="absolute inset-0 bg-black z-30 pointer-events-none" />
         )}
+
+        {showOverlay && !locked && (
+          <motion.div
+            ref={overlayRef}
+            className="pointer-events-auto overflow-hidden"
+            style={{
+              position: "absolute",
+              width: PHONE_H,
+              height: PHONE_W,
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              borderRadius: 36,
+              border: "3px solid rgba(255,255,255,0.15)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05) inset",
+              zIndex: 60,
+            }}
+          >
+            <div
+              className="absolute z-10 flex flex-col items-center justify-center"
+              style={{
+                top: "50%",
+                right: 0,
+                transform: "translateY(-50%)",
+                width: 26,
+                height: 100,
+                borderRadius: "12px 0 0 12px",
+                background: "#000",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+              }}
+            >
+              <div className="w-[5px] h-[50px] bg-[#1a1a1a] rounded-full" />
+            </div>
+            <video
+              ref={(el) => { videoRefs.current[ROTATED_INDEX] = el }}
+              src={horizontalVideo.src}
+              className="w-full h-full object-cover"
+              style={{ pointerEvents: "auto" }}
+              autoPlay
+              loop
+              playsInline
+              muted={isMuted}
+              onClick={() => togglePlay(ROTATED_INDEX)}
+            />
+          </motion.div>
+        )}
       </motion.div>
 
       {!locked && (
@@ -469,9 +516,9 @@ export function PhoneReel({
             className="flex items-center justify-center cursor-pointer"
             style={{
               position: "absolute",
-              width: isMobile ? 28 : 40,
-              height: isMobile ? 28 : 40,
-              borderRadius: isMobile ? 8 : 12,
+              width: isMobile ? 36 : 40,
+              height: isMobile ? 36 : 40,
+              borderRadius: isMobile ? 10 : 12,
               background: "rgba(255,255,255,0.15)",
               backdropFilter: "blur(16px)",
               WebkitBackdropFilter: "blur(16px)",
@@ -479,7 +526,7 @@ export function PhoneReel({
               color: "white",
               zIndex: 70,
               ...(isMobile
-                ? { top: 8, right: 8, left: "auto", bottom: "auto", transform: "none" }
+                ? { top: 10, right: 10, left: "auto", bottom: "auto", transform: "none" }
                 : {
                     left: isRotated ? -(PHONE_H / 2 - PHONE_W / 2 + 56) : PHONE_W + 16,
                     top: isRotated ? "calc(50% - 52px)" : 96,
@@ -488,7 +535,7 @@ export function PhoneReel({
               ),
             }}
           >
-            {isMuted ? <VolumeX size={isMobile ? 14 : 18} /> : <Volume2 size={isMobile ? 14 : 18} />}
+            {isMuted ? <VolumeX size={isMobile ? 18 : 18} /> : <Volume2 size={isMobile ? 18 : 18} />}
           </motion.button>
 
           <motion.button
@@ -496,9 +543,9 @@ export function PhoneReel({
             className="flex items-center justify-center cursor-pointer"
             style={{
               position: "absolute",
-              width: isMobile ? 28 : 40,
-              height: isMobile ? 28 : 40,
-              borderRadius: isMobile ? 8 : 12,
+              width: isMobile ? 36 : 40,
+              height: isMobile ? 36 : 40,
+              borderRadius: isMobile ? 10 : 12,
               background: "rgba(255,255,255,0.15)",
               backdropFilter: "blur(16px)",
               WebkitBackdropFilter: "blur(16px)",
@@ -506,7 +553,7 @@ export function PhoneReel({
               color: "white",
               zIndex: 70,
               ...(isMobile
-                ? { top: 44, right: 8, left: "auto", bottom: "auto", transform: "none" }
+                ? { top: 52, right: 10, left: "auto", bottom: "auto", transform: "none" }
                 : {
                     left: isRotated ? -(PHONE_H / 2 - PHONE_W / 2 + 56) : PHONE_W + 16,
                     top: isRotated ? "calc(50% - 4px)" : 144,
@@ -515,55 +562,9 @@ export function PhoneReel({
               ),
             }}
           >
-            <Lock size={isMobile ? 14 : 18} />
+            <Lock size={isMobile ? 18 : 18} />
           </motion.button>
         </>
-      )}
-
-      {showOverlay && !locked && (
-        <motion.div
-          ref={overlayRef}
-          className="pointer-events-auto overflow-hidden"
-          style={{
-            position: "absolute",
-            width: PHONE_H,
-            height: PHONE_W,
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-            borderRadius: 36,
-            border: "3px solid rgba(255,255,255,0.15)",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05) inset",
-            zIndex: 60,
-          }}
-        >
-          <div
-            className="absolute z-10 flex flex-col items-center justify-center"
-            style={{
-              top: "50%",
-              right: 0,
-              transform: "translateY(-50%)",
-              width: 26,
-              height: 100,
-              borderRadius: "12px 0 0 12px",
-              background: "#000",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
-            }}
-          >
-            <div className="w-[5px] h-[50px] bg-[#1a1a1a] rounded-full" />
-          </div>
-          <video
-            ref={(el) => { videoRefs.current[ROTATED_INDEX] = el }}
-            src={horizontalVideo.src}
-            className="w-full h-full object-cover"
-            style={{ pointerEvents: "auto" }}
-            autoPlay
-            loop
-            playsInline
-            muted={isMuted}
-            onClick={() => togglePlay(ROTATED_INDEX)}
-          />
-        </motion.div>
       )}
     </>
   )
