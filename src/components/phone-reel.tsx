@@ -383,6 +383,7 @@ export function PhoneReel({
           width: PHONE_W,
           height: PHONE_H,
           borderRadius: 36,
+          overflow: "hidden",
           border: locked ? "3px solid #000" : "3px solid rgba(255,255,255,0.15)",
           boxShadow: locked
             ? "0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,0,0,0.1) inset"

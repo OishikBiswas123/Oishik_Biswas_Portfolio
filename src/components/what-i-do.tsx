@@ -139,7 +139,7 @@ export function WhatIDo() {
 
       <div className="mx-auto max-w-6xl px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(200px,280px)_1fr] gap-x-8 gap-y-6 lg:gap-y-0">
-          <aside className="sticky top-[20vh] self-start">
+          <aside className="lg:sticky lg:top-[20vh] self-start z-10">
             <span className="text-xs uppercase tracking-[0.25em] text-text-muted">
               what i do
             </span>
