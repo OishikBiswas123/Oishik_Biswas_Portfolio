@@ -12,6 +12,32 @@ import { projects } from "@/lib/data"
 export default function Home() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            name: "Oishik Biswas",
+            url: "https://oishikbiswas.vercel.app",
+            image: "https://oishikbiswas.vercel.app/profile.jpg",
+            sameAs: [
+              "https://github.com/OishikBiswas123",
+              "https://www.linkedin.com/in/oishik-biswas-1487003aa/",
+            ],
+            jobTitle: "Software Engineer",
+            description: "Web developer, app developer, game developer, product designer, and AI enthusiast",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Kolkata",
+              addressRegion: "West Bengal",
+              addressCountry: "India",
+            },
+            email: "oishikthegreat@gmail.com",
+            telephone: "+917044952230",
+          }),
+        }}
+      />
       <HeroSection />
 
       <StatsStrip />

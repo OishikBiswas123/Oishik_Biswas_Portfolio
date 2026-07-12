@@ -9,31 +9,53 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Oishik Biswas — Full-Stack Developer",
+  title: "Oishik Biswas — Software Engineer",
   description:
-    "Portfolio of Oishik Biswas, a full-stack developer specializing in modern web technologies.",
+    "Web developer, app developer, game developer, product designer, and AI enthusiast — building across Unity, Android, and the web.",
   keywords: [
     "Oishik Biswas",
-    "full-stack developer",
     "web developer",
+    "app developer",
+    "game developer",
+    "product designer",
+    "AI enthusiast",
+    "Kolkata",
+    "India",
     "portfolio",
   ],
+  authors: [{ name: "Oishik Biswas" }],
+  creator: "Oishik Biswas",
+  publisher: "Oishik Biswas",
+  metadataBase: new URL("https://oishikbiswas.vercel.app"),
   openGraph: {
-    title: "Oishik Biswas — Full-Stack Developer",
+    title: "Oishik Biswas — Software Engineer",
     description:
-      "Portfolio of Oishik Biswas, a full-stack developer specializing in modern web technologies.",
+      "Web developer, app developer, game developer, product designer, and AI enthusiast — building across Unity, Android, and the web.",
+    url: "https://oishikbiswas.vercel.app",
+    siteName: "Oishik Biswas Portfolio",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Oishik Biswas — Full-Stack Developer",
+    title: "Oishik Biswas — Software Engineer",
     description:
-      "Portfolio of Oishik Biswas, a full-stack developer specializing in modern web technologies.",
+      "Web developer, app developer, game developer, product designer, and AI enthusiast — building across Unity, Android, and the web.",
+    creator: "@oishikbiswas",
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "google1fa75ac2c5b97232",
   },
   icons: {
     icon: "/favicon.png",
