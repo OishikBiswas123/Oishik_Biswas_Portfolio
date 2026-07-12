@@ -36,7 +36,7 @@ export function HeroSection() {
     <section id="hero" className="relative min-h-screen flex flex-col justify-center px-8 md:px-16 lg:px-24 scroll-mt-16">
       <LightMotes />
       <Bees />
-      <div ref={meadowRef} className="absolute z-0 pointer-events-none select-none" style={{ left: 0, width: '100vw', bottom: 0 }}>
+      <div ref={meadowRef} className="absolute z-0 pointer-events-none select-none overflow-hidden md:overflow-visible" style={{ left: 0, width: '100vw', bottom: 0 }}>
         <img
           src="/meadow/medows.png"
           alt=""
