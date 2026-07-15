@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react"
 import { moviePicks } from "@/lib/entertainment-data"
 
 export function MyMoviePicks() {
-  const [centerIndex, setCenterIndex] = useState(Math.floor(moviePicks.length / 2))
+  const [centerIndex, setCenterIndex] = useState(0)
 
   const goTo = useCallback((index: number) => {
     setCenterIndex(((index % moviePicks.length) + moviePicks.length) % moviePicks.length)
@@ -34,12 +34,16 @@ export function MyMoviePicks() {
       <div className="relative mt-16" style={{ perspective: "1700px" }}>
         <div className="relative mx-auto" style={{ height: "clamp(280px,45vw,420px)", maxWidth: "100vw" }}>
           {moviePicks.map((item, i) => {
-            const diff = i - centerIndex
+            const n = moviePicks.length
+            const half = Math.floor(n / 2)
+            let diff = i - centerIndex
+            if (diff > half) diff -= n
+            if (diff < -half) diff += n
             const isCenter = diff === 0
             const absDiff = Math.abs(diff)
 
-            const xOffset = diff * -140
-            const rotate = diff * -12
+            const xOffset = diff * 140
+            const rotate = diff * 12
             const scale = 1 - absDiff * 0.12
             const zIndex = moviePicks.length - absDiff
             const opacity = 1 - absDiff * 0.12
