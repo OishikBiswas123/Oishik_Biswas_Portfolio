@@ -1,16 +1,51 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react"
 import { moviePicks } from "@/lib/entertainment-data"
 
 export function MyMoviePicks() {
   const [centerIndex, setCenterIndex] = useState(0)
+  const swipeBarRef = useRef<HTMLDivElement>(null)
 
   const goTo = useCallback((index: number) => {
     setCenterIndex(((index % moviePicks.length) + moviePicks.length) % moviePicks.length)
   }, [])
+
+  useEffect(() => {
+    const bar = swipeBarRef.current
+    if (!bar) return
+
+    let startX = 0
+    let startY = 0
+
+    const onTouchStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX
+      startY = e.touches[0].clientY
+    }
+
+    const onTouchEnd = (e: TouchEvent) => {
+      const deltaX = e.changedTouches[0].clientX - startX
+      const deltaY = e.changedTouches[0].clientY - startY
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+        e.preventDefault()
+        if (deltaX > 0) {
+          goTo(centerIndex - 1)
+        } else {
+          goTo(centerIndex + 1)
+        }
+      }
+    }
+
+    bar.addEventListener('touchstart', onTouchStart, { passive: true })
+    bar.addEventListener('touchend', onTouchEnd, { passive: false })
+
+    return () => {
+      bar.removeEventListener('touchstart', onTouchStart)
+      bar.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [centerIndex, goTo])
 
   const handleCardClick = useCallback((index: number) => {
     if (index === centerIndex) {
@@ -33,6 +68,8 @@ export function MyMoviePicks() {
 
       <div className="relative mt-16" style={{ perspective: "1700px" }}>
         <div className="relative mx-auto" style={{ height: "clamp(280px,45vw,420px)", maxWidth: "100vw" }}>
+          <div ref={swipeBarRef} className="absolute inset-x-0 top-0 h-full z-30" />
+
           {moviePicks.map((item, i) => {
             const n = moviePicks.length
             const half = Math.floor(n / 2)
