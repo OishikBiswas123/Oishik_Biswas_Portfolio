@@ -40,6 +40,7 @@ export function HeroSection() {
         <img
           src="/meadow/medows.png"
           alt=""
+          loading="lazy"
           className="w-full h-auto scale-[2.5] md:scale-100 origin-bottom"
           style={{
             WebkitMaskImage: "linear-gradient(to bottom, black 78%, transparent 100%)",

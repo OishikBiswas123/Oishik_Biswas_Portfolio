@@ -35,9 +35,9 @@ export function ProjectCard({
             src={project.videos[0]}
             className="w-full h-full object-cover"
             muted
-            autoPlay
             loop
             playsInline
+            preload="metadata"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-text-muted text-sm uppercase tracking-widest">

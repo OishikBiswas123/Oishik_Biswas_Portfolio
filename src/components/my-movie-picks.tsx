@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback, useRef, useEffect } from "react"
+import Image from "next/image"
 import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react"
 import { moviePicks } from "@/lib/entertainment-data"
@@ -101,11 +102,12 @@ export function MyMoviePicks() {
                 whileHover={!isCenter ? { y: -8 } : undefined}
               >
                 <div className="relative w-full aspect-[2/3] overflow-hidden rounded-xl shadow-2xl">
-                  <img
+                  <Image
                     src={item.poster}
                     alt={item.title}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
+                    fill
+                    sizes="(max-width: 768px) 140px, 200px"
+                    className="object-cover"
                   />
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-3 pt-8">
                     <p className="text-xs font-medium text-white text-left leading-tight line-clamp-2">

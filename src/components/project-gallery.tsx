@@ -43,6 +43,7 @@ export function ProjectGallery({
                 src={item.src}
                 className="w-full h-full object-cover"
                 muted
+                preload="metadata"
               />
             )}
           </button>
