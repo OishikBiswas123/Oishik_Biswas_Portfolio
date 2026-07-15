@@ -40,7 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Large gallery videos
-public/Gallery/oishik biswas besabriya.mp4
-public/Gallery/oishik biswas college performance.mp4
-public/Gallery/oishik biswas reel.mp4
+# Large gallery videos (hosted externally)
+public/Gallery/*.mp4
+public/Gallery/*.MOV
+public/Gallery/*.JPG
+public/Gallery/*.jpg
+public/Gallery/*.jpeg
