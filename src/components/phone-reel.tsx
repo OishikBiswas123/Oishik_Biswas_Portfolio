@@ -437,15 +437,15 @@ export function PhoneReel({
                 {video.isHorizontal && (hideContent || showOverlay) ? (
                   <div className="w-full h-full bg-black" />
                 ) : (
-            <video
-              ref={(el) => { videoRefs.current[ROTATED_INDEX] = el }}
-              className="w-full h-full object-cover"
-              loop
-              playsInline
-              muted={isMuted}
-              preload="metadata"
-              onClick={() => togglePlay(ROTATED_INDEX)}
-            />
+                  <video
+                    src={video.src}
+                    className="w-full h-full object-cover"
+                    loop
+                    playsInline
+                    muted={isMuted}
+                    preload="metadata"
+                    ref={(el) => { videoRefs.current[i] = el }}
+                  />
                 )}
               </div>
             ))}
