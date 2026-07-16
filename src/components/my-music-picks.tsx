@@ -112,7 +112,7 @@ export function MyMusicPicks({ resetKey = 0, onTrackChange }: { resetKey?: numbe
                 <div className="relative rounded-xl shadow-2xl overflow-hidden bg-white/5">
                   <div style={{ pointerEvents: isCenter ? "auto" : "none" }} className="overflow-hidden">
                     <iframe
-                      key={`${track.spotifyId}-${isCenter ? centerIndex : ''}-${resetKey}`}
+                      key={`${track.spotifyId}-${resetKey}`}
                       src={`https://open.spotify.com/embed/track/${track.spotifyId}?utm_source=generator&theme=0`}
                       width="100%"
                       height="232"
