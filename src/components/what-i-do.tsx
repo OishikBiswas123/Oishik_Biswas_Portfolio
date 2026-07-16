@@ -69,7 +69,7 @@ function Card({ item, index }: { item: (typeof items)[number]; index: number }) 
         <span className="col-[1] row-[1/3] text-base font-black text-text-muted/30 leading-none pt-1 select-none">
           {item.num}
         </span>
-        <h3 className="col-[2] text-5xl sm:text-6xl font-bold text-text-primary leading-[1.1] tracking-tight">
+        <h3 className="col-[2] text-3xl sm:text-4xl lg:text-6xl font-bold text-text-primary leading-[1.1] tracking-tight break-words">
           {item.title}
         </h3>
         <span className="col-[3] text-[10px] uppercase tracking-[0.15em] text-text-muted text-right pt-1.5 leading-snug">

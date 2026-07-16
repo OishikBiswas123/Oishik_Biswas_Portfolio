@@ -10,7 +10,7 @@ export default function MainLayout({
   return (
     <SkyThemeProvider>
       <Sidebar />
-      <div className="md:mr-72 pb-16 md:pb-0">
+      <div className="md:mr-72 pb-24 md:pb-0 overflow-x-hidden md:overflow-x-visible">
         <main className="flex-1">{children}</main>
         <Footer />
       </div>
