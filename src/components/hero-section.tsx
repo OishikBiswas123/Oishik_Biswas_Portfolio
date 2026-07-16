@@ -38,7 +38,7 @@ export function HeroSection() {
       <Bees />
       <div ref={meadowRef} className="absolute z-0 pointer-events-none select-none overflow-hidden md:overflow-visible" style={{ left: '-36px', width: 'calc(100vw + 72px)', bottom: 0 }}>
         <img
-          src="/meadow/medows.png"
+          src="/meadow/medows.jpg"
           alt=""
           loading="lazy"
           className="w-full h-auto scale-[2.5] md:scale-100 origin-bottom"

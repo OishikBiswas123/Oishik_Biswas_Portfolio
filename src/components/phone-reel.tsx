@@ -397,7 +397,7 @@ export function PhoneReel({
               className="w-full h-full flex flex-col items-center justify-between py-16 cursor-pointer select-none"
               whileHover={{ scale: 1.02 }}
               style={{
-                backgroundImage: "url(/meadow/medows.png)",
+                backgroundImage: "url(/meadow/medows.jpg)",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 borderRadius: 36,
