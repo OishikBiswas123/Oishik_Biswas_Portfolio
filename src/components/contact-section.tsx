@@ -5,7 +5,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 import { onLenisScroll } from "@/components/smooth-scroll-provider"
 import { ContactForm } from "@/components/contact-form"
 import { StatusBar } from "@/components/status-bar"
-import { Mail, MapPin, Phone, ExternalLink, MessageCircle } from "lucide-react"
+import { Mail, MapPin, Phone, ExternalLink, MessageCircle, Camera } from "lucide-react"
 import { personalInfo } from "@/lib/data"
 
 export function ContactSection() {
@@ -109,6 +109,15 @@ export function ContactSection() {
             >
               <MessageCircle size={16} />
               WhatsApp
+            </a>
+            <a
+              href={personalInfo.social.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm text-text-secondary bg-white/10 dark:bg-white/5 backdrop-blur-xl border border-white/20 rounded-full hover:bg-white/20 dark:hover:bg-white/10 hover:text-text-primary transition-all"
+            >
+              <Camera size={16} />
+              Instagram
             </a>
             <a
               href={`tel:${personalInfo.phone}`}
