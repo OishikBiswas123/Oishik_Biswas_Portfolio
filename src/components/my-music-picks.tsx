@@ -1,151 +1,265 @@
 "use client"
 
-import { useState, useCallback, useRef, useEffect } from "react"
-import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useCallback, useEffect, useRef, useState } from "react"
+import CircularCarousel, { type CarouselItem } from "@/components/circular-carousel/circular-carousel"
+import { useSkyTheme } from "@/components/sky-theme-provider"
 import { musicTracks } from "@/lib/entertainment-data"
 
-export function MyMusicPicks({ resetKey = 0, onTrackChange }: { resetKey?: number; onTrackChange?: () => void }) {
-  const [centerIndex, setCenterIndex] = useState(0)
-  const swipeBarRef = useRef<HTMLDivElement>(null)
-  const prevCenterRef = useRef(centerIndex)
+// Depth-fade color should match the section background in each sky theme
+const FADE_COLORS: Record<string, string> = {
+  dawn: "#faf5ed",
+  day: "#1a3a5c",
+  golden: "#faf5ed",
+  night: "#0f1628",
+}
 
-  const goTo = useCallback((index: number) => {
-    setCenterIndex(((index % musicTracks.length) + musicTracks.length) % musicTracks.length)
+const SPOTIFY_IFRAME_API_SRC = "https://open.spotify.com/embed/iframe-api/v1"
+
+interface SpotifyPlaybackData {
+  isPaused: boolean
+  position: number
+  duration: number
+}
+
+interface SpotifyController {
+  loadUri(uri: string): void
+  play(): void
+  pause(): void
+  addListener(event: string, callback: (e: { data?: SpotifyPlaybackData }) => void): void
+  removeListener(event: string, callback: (e: { data?: SpotifyPlaybackData }) => void): void
+  disconnect(): void
+}
+
+interface SpotifyIframeApi {
+  createController(
+    element: HTMLElement,
+    options: { uri: string; width?: number; height?: number },
+    callback: (controller: SpotifyController) => void
+  ): void
+}
+
+type SpotifyWindow = Window & {
+  __skySpotifyApiPromise?: Promise<SpotifyIframeApi>
+  onSpotifyIframeApiReady?: (api: SpotifyIframeApi) => void
+}
+
+/** Loads (once) Spotify's IFrame API so the hidden player can be driven programmatically. */
+function loadSpotifyIframeApi(): Promise<SpotifyIframeApi> {
+  const w = window as SpotifyWindow
+  if (!w.__skySpotifyApiPromise) {
+    w.__skySpotifyApiPromise = new Promise<SpotifyIframeApi>(resolve => {
+      if ((window as SpotifyWindow).__skySpotifyApiPromise) return
+      w.onSpotifyIframeApiReady = api => resolve(api)
+      const script = document.createElement("script")
+      script.src = SPOTIFY_IFRAME_API_SRC
+      script.async = true
+      document.head.appendChild(script)
+    })
+  }
+  return w.__skySpotifyApiPromise
+}
+
+const items: CarouselItem[] = musicTracks.map(track => ({
+  src: track.art,
+  alt: `${track.title} — ${track.artist}`,
+  title: track.title,
+  subtitle: track.artist,
+}))
+
+export function MyMusicPicks({ resetKey = 0, onTrackChange }: { resetKey?: number; onTrackChange?: () => void }) {
+  const { theme } = useSkyTheme()
+  const [selected, setSelected] = useState(0)
+  const [playing, setPlaying] = useState(false)
+
+  const holderRef = useRef<HTMLDivElement | null>(null)
+  const controllerRef = useRef<SpotifyController | null>(null)
+  const selectedRef = useRef(0)
+  const playingRef = useRef(false)
+  const pendingSelectRef = useRef<number | null>(null)
+  const heardBackRef = useRef(false)
+  const onTrackChangeRef = useRef(onTrackChange)
+
+  useEffect(() => {
+    onTrackChangeRef.current = onTrackChange
+  }, [onTrackChange])
+
+  // Create the hidden Spotify controller once
+  useEffect(() => {
+    let cancelled = false
+    let controller: SpotifyController | null = null
+    const update = (e: { data?: SpotifyPlaybackData }) => {
+      const data = e?.data
+      if (!data) return
+      heardBackRef.current = true
+      playingRef.current = !data.isPaused
+      setPlaying(!data.isPaused)
+    }
+    loadSpotifyIframeApi().then(api => {
+      if (cancelled || !holderRef.current) return
+      // NOTE: do NOT pass width/height here — a 1x1 iframe silently refuses to
+      // play. The iframe renders at its natural size and is kept invisible by
+      // the 1px overflow-hidden wrapper around it.
+      api.createController(
+        holderRef.current,
+        { uri: `spotify:track:${musicTracks[selectedRef.current].spotifyId}` },
+        created => {
+          if (cancelled) return
+          controller = created
+          controllerRef.current = created
+          created.addListener("playback_update", update)
+          // If a poster was clicked before the controller was ready, honor it now
+          if (pendingSelectRef.current !== null) {
+            const index = pendingSelectRef.current
+            pendingSelectRef.current = null
+            if (selectedRef.current !== index) {
+              created.loadUri(`spotify:track:${musicTracks[index].spotifyId}`)
+              selectedRef.current = index
+              setSelected(index)
+            }
+            heardBackRef.current = false
+            created.play()
+            playingRef.current = true
+            setPlaying(true)
+            onTrackChangeRef.current?.()
+          }
+        }
+      )
+    })
+    return () => {
+      cancelled = true
+      try {
+        controller?.removeListener("playback_update", update)
+        controller?.disconnect()
+      } catch {
+        /* controller already gone */
+      }
+      controllerRef.current = null
+      playingRef.current = false
+    }
   }, [])
 
-  useEffect(() => {
-    if (prevCenterRef.current !== centerIndex) {
-      onTrackChange?.()
-      prevCenterRef.current = centerIndex
+  /** Select a poster (switching track if needed) and start playing it. */
+  const selectAndPlay = useCallback((index: number) => {
+    const controller = controllerRef.current
+    if (!controller) {
+      pendingSelectRef.current = index
+      return
     }
-  }, [centerIndex, onTrackChange])
-
-  useEffect(() => {
-    const bar = swipeBarRef.current
-    if (!bar) return
-
-    let startX = 0
-    let startY = 0
-
-    const onTouchStart = (e: TouchEvent) => {
-      startX = e.touches[0].clientX
-      startY = e.touches[0].clientY
+    const switched = selectedRef.current !== index
+    if (switched) {
+      controller.loadUri(`spotify:track:${musicTracks[index].spotifyId}`)
+      selectedRef.current = index
+      setSelected(index)
     }
-
-    const onTouchEnd = (e: TouchEvent) => {
-      const deltaX = e.changedTouches[0].clientX - startX
-      const deltaY = e.changedTouches[0].clientY - startY
-      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
-        e.preventDefault()
-        if (deltaX > 0) {
-          goTo(centerIndex - 1)
-        } else {
-          goTo(centerIndex + 1)
+    heardBackRef.current = false
+    controller.play()
+    if (switched) {
+      // The play command can race the track loading inside the embed and be
+      // dropped. If we still haven't heard any playback event shortly after,
+      // nudge it once more.
+      window.setTimeout(() => {
+        if (controllerRef.current === controller && selectedRef.current === index && playingRef.current && !heardBackRef.current) {
+          controller.play()
         }
-      }
+      }, 800)
     }
+    playingRef.current = true
+    setPlaying(true)
+    onTrackChangeRef.current?.()
+  }, [])
 
-    bar.addEventListener('touchstart', onTouchStart, { passive: true })
-    bar.addEventListener('touchend', onTouchEnd, { passive: false })
-
-    return () => {
-      bar.removeEventListener('touchstart', onTouchStart)
-      bar.removeEventListener('touchend', onTouchEnd)
+  /** Resume/pause the currently selected track. */
+  const togglePlay = useCallback(() => {
+    const controller = controllerRef.current
+    if (!controller) return
+    if (playingRef.current) {
+      controller.pause()
+      playingRef.current = false
+      setPlaying(false)
+    } else {
+      controller.play()
+      playingRef.current = true
+      setPlaying(true)
+      onTrackChangeRef.current?.()
     }
-  }, [centerIndex, goTo])
+  }, [])
 
-  const handleCardClick = useCallback((index: number) => {
-    if (index !== centerIndex) {
-      goTo(index)
+  // Poster click behavior:
+  //  - front card that is already selected → toggle play/pause
+  //  - anything else → bring it front and play it
+  const handleItemClick = useCallback((_item: CarouselItem, index: number) => {
+    if (index === selectedRef.current) {
+      togglePlay()
+    } else {
+      selectAndPlay(index)
     }
-  }, [centerIndex, goTo])
+  }, [selectAndPlay, togglePlay])
+
+  // A hobby audio player started → pause the music
+  useEffect(() => {
+    if (!resetKey) return
+    const controller = controllerRef.current
+    if (controller && playingRef.current) {
+      controller.pause()
+      playingRef.current = false
+      setPlaying(false)
+    }
+  }, [resetKey])
+
+  const track = musicTracks[selected]
 
   return (
     <section className="overflow-hidden py-24 sm:py-32">
+      {/* Hidden Spotify player — driven by poster clicks via the IFrame API.
+          Spotify's API creates the iframe with loading="lazy", so it MUST stay
+          inside the viewport or Chrome never loads it. We keep it on-screen but
+          effectively invisible (1% opacity, behind everything, click-through). */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          left: 0,
+          bottom: 0,
+          width: 320,
+          height: 152,
+          overflow: "hidden",
+          opacity: 0.01,
+          pointerEvents: "none",
+          zIndex: -1,
+        }}
+      >
+        <div ref={holderRef} />
+      </div>
+
       <div className="mx-auto max-w-6xl px-6 text-center">
         <span className="text-sm uppercase tracking-[0.25em] text-text-muted font-semibold">
           The Soundtrack of My Life
         </span>
         <p className="mt-3 text-lg text-text-secondary leading-relaxed max-w-md mx-auto">
-          Songs that define moments.
+          {playing && track ? `Now playing — tap the poster to pause.` : "Songs that define moments."}
         </p>
       </div>
 
-      <div className="relative mt-16" style={{ perspective: "1700px" }}>
-        <div className="relative mx-auto" style={{ height: "clamp(300px,44vw,400px)", maxWidth: "100vw" }}>
-          {/* Swipe bar — sibling of cards, not an ancestor of iframes */}
-          <div
-            ref={swipeBarRef}
-            className="absolute inset-x-0 top-0 h-3/5 z-30"
-          />
-
-          {musicTracks.map((track, i) => {
-            const n = musicTracks.length
-            const half = Math.floor(n / 2)
-            let diff = i - centerIndex
-            if (diff > half) diff -= n
-            if (diff < -half) diff += n
-            const isCenter = diff === 0
-            const absDiff = Math.abs(diff)
-
-            const xOffset = diff * 220
-            const rotate = diff * 10
-            const scale = 1 - absDiff * 0.1
-            const zIndex = musicTracks.length - absDiff
-            const opacity = 1 - absDiff * 0.15
-
-            return (
-              <motion.div
-                key={i}
-                onClick={isCenter ? undefined : () => handleCardClick(i)}
-                className="absolute left-1/2 top-0"
-                style={{ width: "clamp(320px,44vw,440px)", zIndex }}
-                animate={{
-                  x: `calc(-50% + ${xOffset}px)`,
-                  rotateY: `${rotate}deg`,
-                  scale: Math.max(0.4, scale),
-                  opacity: Math.max(0.15, opacity),
-                }}
-                transition={{ type: "spring", stiffness: 200, damping: 25 }}
-              >
-                <div className="relative rounded-xl shadow-2xl overflow-hidden bg-white/5">
-                  <div style={{ pointerEvents: isCenter ? "auto" : "none" }} className="overflow-hidden">
-                    <iframe
-                      key={`${track.spotifyId}-${resetKey}`}
-                      src={`https://open.spotify.com/embed/track/${track.spotifyId}?utm_source=generator&theme=0`}
-                      width="100%"
-                      height="232"
-                      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                      loading="lazy"
-                      className="block"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            )
-          })}
-        </div>
-
-        <div className="mt-8 flex items-center justify-center gap-4">
-          <button
-            onClick={() => goTo(centerIndex - 1)}
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white/70 hover:text-white hover:bg-white/20 transition-all"
-            aria-label="Previous"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <span className="text-sm text-text-muted font-mono">
-            {centerIndex + 1} / {musicTracks.length}
-          </span>
-          <button
-            onClick={() => goTo(centerIndex + 1)}
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white/70 hover:text-white hover:bg-white/20 transition-all"
-            aria-label="Next"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
+      <div className="mx-auto mt-14 max-w-6xl px-4">
+        <CircularCarousel
+          items={items}
+          preset="cylinder"
+          intro="rise"
+          cardWidth={190}
+          aspectRatio={1}
+          gap={28}
+          captions
+          autoplay="drift"
+          speed={8}
+          draggable
+          snap
+          pauseOnHover
+          focusOnClick
+          cornerRadius={14}
+          fadeColor={FADE_COLORS[theme] ?? FADE_COLORS.night}
+          onItemClick={handleItemClick}
+          style={{ height: "clamp(240px, 42vw, 440px)" }}
+        />
       </div>
     </section>
   )

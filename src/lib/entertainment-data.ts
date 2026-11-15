@@ -9,6 +9,8 @@ export interface MusicTrack {
   title: string
   artist: string
   spotifyId: string
+  /** Album cover image URL (from Spotify oEmbed) */
+  art: string
 }
 
 export const moviePicks: MoviePick[] = [
@@ -31,20 +33,20 @@ export const moviePicks: MoviePick[] = [
 ]
 
 export const musicTracks: MusicTrack[] = [
-  { title: "Ishq Jalakar - Karvaan", artist: "Shashwat Sachdev, Shahzad Ali", spotifyId: "7d5TUdbJumBuBoaH33jyfo" },
-  { title: "Surface", artist: "Aero Chord", spotifyId: "63bR379dNknfAws2hBBsq7" },
-  { title: "Right Now (Na Na Na)", artist: "Akon", spotifyId: "5Ravsw8TmHN5wBiYPPYUFw" },
-  { title: "Faded", artist: "Alan Walker", spotifyId: "698ItKASDavgwZ3WjaWjtz" },
-  { title: "Darkhaast", artist: "Mithoon, Arijit Singh, Sunidhi Chauhan", spotifyId: "1awtp7rf6ajhGY9BgzCHeZ" },
-  { title: "Samjhawan", artist: "Arijit Singh, Shreya Ghoshal", spotifyId: "0rk2X5TAhraBC5aCIXK2Rq" },
-  { title: "Memories", artist: "Maroon 5", spotifyId: "4cktbXiXOapiLBMprHFErI" },
-  { title: "Nuclear (Hands Up)", artist: "Zomboy", spotifyId: "32AV76N8GhpnJ74VoYfDGk" },
-  { title: "Ore Manwa Re", artist: "Arijit Singh, Akriti Kakar", spotifyId: "0dNVDlHjA2fjn0yjTEamKa" },
-  { title: "Piya O Re Piya", artist: "Atif Aslam, Shreya Ghoshal", spotifyId: "5a11x5PUFvJEadMRqtNtTr" },
-  { title: "Aye Khuda", artist: "Salim Merchant", spotifyId: "1vgVsR5rkXGP4NmUcoroJH" },
-  { title: "Thunder", artist: "Imagine Dragons", spotifyId: "1zB4vmk8tFRmM9UULNzbLB" },
-  { title: "Replay", artist: "Iyaz", spotifyId: "4E5P1XyAFtrjpiIxkydly4" },
-  { title: "Baby", artist: "Justin Bieber, Ludacris", spotifyId: "6epn3r7S14KUqlReYr77hA" },
-  { title: "Lolly Pop Lageli", artist: "Pawan Singh", spotifyId: "07JB2QPqdFJOAh9d8U40Tr" },
-  { title: "Speechless", artist: "Naomi Scott", spotifyId: "0XPsOSYzDJZJArevQNm2AR" },
+  { title: "Ishq Jalakar - Karvaan", artist: "Shashwat Sachdev, Shahzad Ali", spotifyId: "7d5TUdbJumBuBoaH33jyfo", art: "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e0238da56c296cd6e1d88144b32" },
+  { title: "Surface", artist: "Aero Chord", spotifyId: "63bR379dNknfAws2hBBsq7", art: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e023f347472fbda7a278597efff" },
+  { title: "Right Now (Na Na Na)", artist: "Akon", spotifyId: "5Ravsw8TmHN5wBiYPPYUFw", art: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02e77aece1352dcc4f4cfd097f" },
+  { title: "Faded", artist: "Alan Walker", spotifyId: "698ItKASDavgwZ3WjaWjtz", art: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02a108e07c661f9fc54de9c43a" },
+  { title: "Darkhaast", artist: "Mithoon, Arijit Singh, Sunidhi Chauhan", spotifyId: "1awtp7rf6ajhGY9BgzCHeZ", art: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02e7fe7d656750737e8d369f95" },
+  { title: "Samjhawan", artist: "Arijit Singh, Shreya Ghoshal", spotifyId: "0rk2X5TAhraBC5aCIXK2Rq", art: "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e028a7ae7092464f6685355dc3c" },
+  { title: "Memories", artist: "Maroon 5", spotifyId: "4cktbXiXOapiLBMprHFErI", art: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0286a8ab515de4b7aef28cd631" },
+  { title: "Nuclear (Hands Up)", artist: "Zomboy", spotifyId: "32AV76N8GhpnJ74VoYfDGk", art: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0265afd721f59124fc7cfb06a9" },
+  { title: "Ore Manwa Re", artist: "Arijit Singh, Akriti Kakar", spotifyId: "0dNVDlHjA2fjn0yjTEamKa", art: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e022eacfb15516ab8b5d43eea54" },
+  { title: "Piya O Re Piya", artist: "Atif Aslam, Shreya Ghoshal", spotifyId: "5a11x5PUFvJEadMRqtNtTr", art: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e0237cb4477d67a209206bf281a" },
+  { title: "Aye Khuda", artist: "Salim Merchant", spotifyId: "1vgVsR5rkXGP4NmUcoroJH", art: "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e0205ab1baaa49d516762821a20" },
+  { title: "Thunder", artist: "Imagine Dragons", spotifyId: "1zB4vmk8tFRmM9UULNzbLB", art: "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e025675e83f707f1d7271e5cf8a" },
+  { title: "Replay", artist: "Iyaz", spotifyId: "4E5P1XyAFtrjpiIxkydly4", art: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02246fa1e0cb263a33e5115540" },
+  { title: "Baby", artist: "Justin Bieber, Ludacris", spotifyId: "6epn3r7S14KUqlReYr77hA", art: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02629dc9e2e3bc20bbd7d92e4a" },
+  { title: "Lolly Pop Lageli", artist: "Pawan Singh", spotifyId: "07JB2QPqdFJOAh9d8U40Tr", art: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e028b84b4554e626fd5fe0befd9" },
+  { title: "Speechless", artist: "Naomi Scott", spotifyId: "0XPsOSYzDJZJArevQNm2AR", art: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e029986d69836eac008a927b032" },
 ]
