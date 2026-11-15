@@ -25,7 +25,7 @@ export function SkyToggle({ horizontal }: { horizontal?: boolean }) {
             onClick={() => setTheme(t.id)}
             className={cn(
               horizontal
-                ? "w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-200"
+                ? "w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200"
                 : "w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200",
               isActive
                 ? "bg-accent text-text-primary scale-110"
@@ -33,7 +33,7 @@ export function SkyToggle({ horizontal }: { horizontal?: boolean }) {
             )}
             title={t.label}
           >
-            <Icon size={horizontal ? 13 : 15} />
+            <Icon size={horizontal ? 14 : 15} />
           </button>
         )
       })}
@@ -44,7 +44,7 @@ export function SkyToggle({ horizontal }: { horizontal?: boolean }) {
         onClick={() => setAutoTheme(!autoTheme)}
         className={cn(
           horizontal
-            ? "w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-200 font-mono"
+            ? "w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 font-mono"
             : "w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all duration-200 font-mono",
           autoTheme
             ? "bg-accent text-text-primary"
@@ -52,7 +52,7 @@ export function SkyToggle({ horizontal }: { horizontal?: boolean }) {
         )}
         title={autoTheme ? "Auto (on)" : "Auto (off)"}
       >
-        <span className={cn(horizontal ? "text-[10px]" : "text-[11px]")}>A</span>
+        <span className={cn(horizontal ? "text-[11px]" : "text-[11px]")}>A</span>
       </button>
     </div>
   )

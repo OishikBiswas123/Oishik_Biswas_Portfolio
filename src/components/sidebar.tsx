@@ -127,7 +127,7 @@ export function Sidebar() {
         </div>
       </aside>
 
-      <nav className="md:hidden fixed bottom-4 inset-x-0 mx-auto w-auto max-w-[calc(100%-32px)] overflow-x-auto px-2 py-2 bg-white/10 dark:bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl z-50 flex items-center gap-0 shadow-xl shadow-black/5">
+      <nav className="md:hidden fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] inset-x-0 mx-auto w-auto max-w-[calc(100%-32px)] overflow-x-auto scrollbar-hide px-2 py-2 bg-bg-base/85 backdrop-blur-xl border border-border-light rounded-2xl z-50 flex items-center gap-0 shadow-xl shadow-black/10">
         {navItems.map((item) => {
           const Icon = item.icon
           const active = isActive(item.href)
@@ -136,14 +136,14 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center gap-0 px-2 py-1 rounded-xl transition-colors shrink-0",
+                "flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-xl transition-colors shrink-0",
                 active
-                  ? "text-text-primary bg-white/20 dark:bg-white/10"
-                  : "text-text-secondary hover:text-text-primary hover:bg-white/10 dark:hover:bg-white/5"
+                  ? "text-text-primary bg-accent font-medium"
+                  : "text-text-secondary hover:text-text-primary hover:bg-accent-hover/60"
               )}
             >
-              <Icon size={16} />
-              <span className="text-[9px] uppercase tracking-wider leading-tight">
+              <Icon size={18} />
+              <span className="text-[10px] uppercase tracking-wide leading-tight">
                 {item.label}
               </span>
             </Link>
