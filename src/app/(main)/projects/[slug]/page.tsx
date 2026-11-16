@@ -1,11 +1,43 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import type { Metadata } from "next"
 import { projects } from "@/lib/data"
 import { ProjectGallery } from "@/components/project-gallery"
 import { ArrowLeft, ExternalLink, GitBranch } from "lucide-react"
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }))
+}
+
+const SITE_URL = "https://oishikbiswas.vercel.app"
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const project = projects.find((p) => p.slug === slug)
+  if (!project) return {}
+
+  const url = `${SITE_URL}/projects/${project.slug}`
+  return {
+    title: `${project.title} — Oishik Biswas`,
+    description: project.description?.slice(0, 158) ?? project.title,
+    alternates: { canonical: url },
+    openGraph: {
+      title: project.title,
+      description: project.description?.slice(0, 158) ?? project.title,
+      url,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: project.title,
+      description: project.description?.slice(0, 158) ?? project.title,
+      creator: "@TheOishiKBiswas",
+    },
+  }
 }
 
 export default async function ProjectDetailPage({

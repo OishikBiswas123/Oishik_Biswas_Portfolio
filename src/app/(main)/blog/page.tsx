@@ -1,5 +1,36 @@
+import type { Metadata } from "next"
 import { blogPosts } from "@/lib/data"
+import { ogImageUrl } from "@/lib/og"
 import { BlogCard } from "@/components/blog-card"
+
+export const metadata: Metadata = {
+  title: "Blog — Oishik Biswas",
+  description:
+    "Essays and ideas by Oishik Biswas — physics, philosophy, and everything in between.",
+  alternates: { canonical: "https://oishikbiswas.vercel.app/blog" },
+  openGraph: {
+    title: "Blog — Oishik Biswas",
+    description:
+      "Essays and ideas by Oishik Biswas — physics, philosophy, and everything in between.",
+    url: "https://oishikbiswas.vercel.app/blog",
+    images: [
+      {
+        url: ogImageUrl("Essays & Ideas — the blog of Oishik Biswas"),
+        width: 1200,
+        height: 630,
+        alt: "Blog — Oishik Biswas",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog — Oishik Biswas",
+    description:
+      "Essays and ideas by Oishik Biswas — physics, philosophy, and everything in between.",
+    creator: "@TheOishiKBiswas",
+    images: [ogImageUrl("Essays & Ideas — the blog of Oishik Biswas")],
+  },
+}
 
 export default function BlogPage() {
   return (

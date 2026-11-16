@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     title: "Oishik Biswas — Software Engineer",
     description:
       "Web developer, app developer, game developer, product designer, and AI enthusiast — building across Unity, Android, and the web.",
-    creator: "@oishikbiswas",
+    creator: "@TheOishiKBiswas",
   },
   robots: {
     index: true,

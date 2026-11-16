@@ -1,12 +1,51 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import type { Metadata } from "next"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { blogPosts } from "@/lib/data"
+import { ogImageUrl } from "@/lib/og"
 import { BlogActions } from "@/components/blog-actions"
 import { ArrowLeft } from "lucide-react"
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }))
+}
+
+const SITE_URL = "https://oishikbiswas.vercel.app"
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const post = blogPosts.find((p) => p.slug === slug)
+  if (!post) return {}
+
+  const url = `${SITE_URL}/blog/${post.slug}`
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: url },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url,
+      type: "article",
+      publishedTime: new Date(post.date).toISOString(),
+      authors: ["Oishik Biswas"],
+      siteName: "Oishik Biswas Portfolio",
+      locale: "en_US",
+      images: [{ url: ogImageUrl(post.title, post.date), width: 1200, height: 630, alt: post.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      creator: "@TheOishiKBiswas",
+      images: [ogImageUrl(post.title, post.date)],
+    },
+  }
 }
 
 /** Newspaper-ink MDX components — fixed ink-on-paper colors, theme-independent. */
@@ -119,8 +158,41 @@ export default async function BlogPostPage({
 
   if (!post) notFound()
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    url: `${SITE_URL}/blog/${post.slug}`,
+    image: post.coverImage
+      ? [`${SITE_URL}${post.coverImage}`]
+      : [`${SITE_URL}${ogImageUrl(post.title, post.date)}`],
+    datePublished: new Date(post.date).toISOString(),
+    dateModified: new Date(post.date).toISOString(),
+    author: {
+      "@type": "Person",
+      name: "Oishik Biswas",
+      url: SITE_URL,
+    },
+    publisher: {
+      "@type": "Person",
+      name: "Oishik Biswas",
+      url: SITE_URL,
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/blog/${post.slug}`,
+    },
+    wordCount: post.content ? post.content.split(/\s+/).length : undefined,
+    keywords: ["time dilation", "relativity", "physics", "personal essay", "black holes", "Doraemon"],
+  }
+
   return (
     <div className="pt-16 pb-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <Link
           href="/blog"

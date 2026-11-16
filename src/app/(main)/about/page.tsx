@@ -1,7 +1,15 @@
+import type { Metadata } from "next"
 import Image from "next/image"
 import { ResumeButton } from "@/components/resume-button"
 import { SkillBadge } from "@/components/skill-badge"
 import { skills, personalInfo } from "@/lib/data"
+
+export const metadata: Metadata = {
+  title: "About — Oishik Biswas",
+  description:
+    "Who is Oishik Biswas — software engineer, developer and creator from Kolkata, India.",
+  alternates: { canonical: "https://oishikbiswas.vercel.app/about" },
+}
 
 export default function AboutPage() {
   return (
