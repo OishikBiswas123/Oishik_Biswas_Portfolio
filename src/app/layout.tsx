@@ -39,6 +39,11 @@ export const metadata: Metadata = {
   creator: "Oishik Biswas",
   publisher: "Oishik Biswas",
   metadataBase: new URL("https://oishikbiswas.vercel.app"),
+  alternates: {
+    types: {
+      "application/rss+xml": "/feed.xml",
+    },
+  },
   openGraph: {
     title: "Oishik Biswas — Software Engineer",
     description:

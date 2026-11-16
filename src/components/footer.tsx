@@ -30,6 +30,12 @@ export function Footer() {
             Twitter
           </Link>
           <Link
+            href="/feed.xml"
+            className="text-sm text-text-muted hover:text-text-primary transition-colors"
+          >
+            RSS
+          </Link>
+          <Link
             href="mailto:oishik.biswas@email.com"
             className="text-sm text-text-muted hover:text-text-primary transition-colors"
           >
