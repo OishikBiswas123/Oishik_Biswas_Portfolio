@@ -66,7 +66,7 @@ const mdxComponents = {
     caption?: string
     uniform?: boolean
   }) => (
-    <figure className="my-9 xl:[column-span:all] xl:break-inside-avoid">
+    <figure className="my-9">
       <div className="grid grid-cols-2 gap-3 items-stretch">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -91,7 +91,7 @@ const mdxComponents = {
     </figure>
   ),
   img: ({ src, alt }: { src?: string; alt?: string }) => (
-    <span className="block my-9 xl:[column-span:all] xl:break-inside-avoid">
+    <span className="block my-9">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
@@ -118,7 +118,7 @@ const mdxComponents = {
     <em className="italic">{children}</em>
   ),
   blockquote: ({ children }: { children?: React.ReactNode }) => (
-    <blockquote className="relative my-10 border-y border-[#2b251d]/40 py-6 text-center xl:[column-span:all] xl:break-inside-avoid">
+    <blockquote className="relative my-10 border-y border-[#2b251d]/40 py-6 text-center">
       <span
         aria-hidden
         className="absolute -top-2 left-1/2 -translate-x-1/2 font-display text-6xl text-[#2b251d]/30"
@@ -140,7 +140,7 @@ const mdxComponents = {
     <li className="leading-[1.8]">{children}</li>
   ),
   code: ({ children }: { children?: React.ReactNode }) => (
-    <span className="my-7 flex justify-center xl:[column-span:all] xl:break-inside-avoid">
+    <span className="my-7 flex justify-center">
       <code className="px-5 py-2 font-mono text-lg border-2 border-[#2b251d]/60 bg-[#efe8d8] text-[#1f1a14]">
         {children}
       </code>
@@ -240,7 +240,7 @@ export default async function BlogPostPage({
             </span>
           )}
 
-          <div className="paper-body mt-10 xl:columns-2 xl:gap-14 xl:[column-rule:1px_solid_rgba(43,37,29,0.18)]">
+          <div className="paper-body mt-10 xl:max-w-[720px] xl:mx-auto">
             {post.content ? (
               <MDXRemote source={post.content} components={mdxComponents} />
             ) : (
