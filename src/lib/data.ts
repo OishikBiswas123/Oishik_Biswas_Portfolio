@@ -96,6 +96,54 @@ export const projects: Project[] = [
       "Complete restaurant workflow: tables, menu, orders, payments, reports",
     ],
   },
+  {
+    slug: "abs-epk",
+    title: "AB's EPK",
+    description:
+      "An Electronic Press Kit website built for playback singer Abir Biswas — artist bio, live-show stats, performance gallery, technical rider, and a booking flow for event organizers.",
+    fullDescription:
+      "AB's EPK is an Electronic Press Kit website I designed and built for Abir Biswas, a fusion-rock singer and stage performer with 100M+ song views, 1.5M+ followers and 500+ live shows across India and worldwide. The single-page experience packages everything an event organizer needs: the artist's story and career stats, a performance photo gallery, press quotes, and social links across YouTube, Instagram, Facebook and Spotify. A dedicated Technical Rider page gives venues and production crews the full live-production requirements, and the booking section routes inquiries straight to the artist's management via call, WhatsApp and email. Built with Next.js and deployed on Vercel.",
+    category: "Web App",
+    techStack: ["Next.js", "TypeScript", "Tailwind CSS", "Vercel"],
+    thumbnail: "/projects/abs-epk/stage.jpg",
+    images: [
+      "/projects/abs-epk/stage.jpg",
+      "/projects/abs-epk/band.jpg",
+      "/projects/abs-epk/on-stage.jpg",
+      "/projects/abs-epk/crowd.jpg",
+    ],
+    videos: [],
+    liveUrl: "https://ab-s-epk.vercel.app/",
+    highlights: [
+      "Client delivery for a touring artist — bio, stats, gallery and press in one kit",
+      "Dedicated Technical Rider page for venues and production crews",
+      "Booking flow routing managers, call, WhatsApp and email into one section",
+    ],
+  },
+  {
+    slug: "dilsey-trust",
+    title: "DILSEY Charitable Trust",
+    description:
+      "The official website of a Mumbai-based charitable trust — six programme areas from education to animal welfare, with donation, volunteering and CSR partnership flows.",
+    fullDescription:
+      "DILSEY Charitable Trust is the official website I built for an NGO based in Andheri West, Mumbai working across education, health, women's empowerment, community care, environment and animal welfare. The site organizes the trust's ten programme areas into six clear focus areas, tells the story behind the 'service from the heart' vision with a chairman's message, and showcases recent field work — school kit distributions, Matunga Road station outreach and plant distribution drives — through an events gallery. It includes a donate page with contribution tiers, volunteer and CSR partnership pathways, a contact section, and full legal pages (privacy, terms, donation & refund policy). The build is SEO-complete with Open Graph metadata, a web manifest and accessibility-minded markup, crafted with Next.js and deployed on Vercel.",
+    category: "Web App",
+    techStack: ["Next.js", "TypeScript", "Tailwind CSS", "SEO"],
+    thumbnail: "/projects/dilsey-trust/logo.webp",
+    images: [
+      "/projects/dilsey-trust/logo.webp",
+      "/projects/dilsey-trust/school-kit.webp",
+      "/projects/dilsey-trust/matunga-outreach.webp",
+      "/projects/dilsey-trust/plant-drive.webp",
+    ],
+    videos: [],
+    liveUrl: "https://dilseytrust.com/",
+    highlights: [
+      "Full client delivery for a Mumbai NGO — content, design and development",
+      "Ten programme areas organized into six focus areas with event galleries",
+      "Donation, volunteer and CSR partnership flows with legal pages",
+    ],
+  },
 ]
 
 export const galleryItems: { src: string; alt: string; type: "image" | "video" }[] = [
@@ -158,7 +206,7 @@ export const galleryItems: { src: string; alt: string; type: "image" | "video" }
   { src: "/Gallery/oishik biswas pop dance.mp4", alt: "Oishik Biswas pop dance", type: "video" },
   { src: "/Gallery/oishik biswas reel.mp4", alt: "Oishik Biswas reel", type: "video" },
   { src: "/Gallery/oishik biswas snowfall.mp4", alt: "Oishik Biswas snowfall", type: "video" },
-  { src: "/Gallery/oishik biswas terrace video.MOV", alt: "Oishik Biswas terrace video", type: "video" },
+  { src: "/Gallery/oishik biswas terrace video.mp4", alt: "Oishik Biswas terrace video", type: "video" },
 ]
 
 export const skills = [

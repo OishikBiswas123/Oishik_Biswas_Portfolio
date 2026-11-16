@@ -13,7 +13,7 @@ export function ProjectCard({
     <Link
       href={`/projects/${project.slug}`}
       className={cn(
-        "group block bg-white/10 dark:bg-white/5 backdrop-blur-2xl border border-white/20 rounded-3xl shadow-xl shadow-black/5 hover:bg-white/20 dark:hover:bg-white/10 transition-all overflow-hidden",
+        "group block bg-white/10 dark:bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl md:rounded-3xl shadow-xl shadow-black/5 hover:bg-white/20 dark:hover:bg-white/10 transition-all overflow-hidden",
         featured ? "col-span-1" : "col-span-1"
       )}
     >
@@ -45,21 +45,21 @@ export function ProjectCard({
           </div>
         )}
       </div>
-      <div className="p-5">
-        <div className="flex items-center gap-2 text-xs text-text-muted uppercase tracking-wider mb-2">
+      <div className="p-3 md:p-5">
+        <div className="flex items-center gap-2 text-[10px] md:text-xs text-text-muted uppercase tracking-wider mb-1 md:mb-2">
           {project.category}
         </div>
-        <h3 className="text-lg font-semibold text-text-primary group-hover:opacity-70 transition-opacity">
+        <h3 className="text-sm md:text-lg font-semibold text-text-primary group-hover:opacity-70 transition-opacity">
           {project.title}
         </h3>
-        <p className="mt-1 text-sm text-text-secondary line-clamp-2">
+        <p className="mt-1 text-sm text-text-secondary line-clamp-2 hidden md:block">
           {project.description}
         </p>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-2 md:mt-3 flex flex-wrap gap-1.5 md:gap-2">
           {project.techStack.slice(0, 3).map((tech) => (
             <span
               key={tech}
-              className="text-[11px] uppercase tracking-wider px-2 py-0.5 bg-white/20 dark:bg-white/10 text-text-secondary rounded-lg"
+              className="text-[9px] md:text-[11px] uppercase tracking-wider px-1.5 md:px-2 py-0.5 bg-white/20 dark:bg-white/10 text-text-secondary rounded-lg"
             >
               {tech}
             </span>
