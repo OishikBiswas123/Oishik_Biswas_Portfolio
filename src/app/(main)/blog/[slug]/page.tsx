@@ -2,6 +2,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { blogPosts } from "@/lib/data"
+import { BlogActions } from "@/components/blog-actions"
 import { ArrowLeft } from "lucide-react"
 
 export function generateStaticParams() {
@@ -176,6 +177,8 @@ export default async function BlogPostPage({
               </p>
             )}
           </div>
+
+          <BlogActions />
 
           {/* Colophon / footer rule */}
           <div className="mt-14 border-t-4 border-[#1f1a14] pt-4 text-center">

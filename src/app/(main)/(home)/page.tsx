@@ -30,6 +30,7 @@ export default function Home() {
             sameAs: [
               "https://github.com/OishikBiswas123",
               "https://www.linkedin.com/in/oishik-biswas-1487003aa/",
+              "https://x.com/TheOishiKBiswas",
             ],
             jobTitle: "Software Engineer",
             description: "Web developer, app developer, game developer, product designer, and AI enthusiast",

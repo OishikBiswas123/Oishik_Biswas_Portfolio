@@ -23,6 +23,13 @@ export function Footer() {
             LinkedIn
           </Link>
           <Link
+            href="https://x.com/TheOishiKBiswas"
+            target="_blank"
+            className="text-sm text-text-muted hover:text-text-primary transition-colors"
+          >
+            Twitter
+          </Link>
+          <Link
             href="mailto:oishik.biswas@email.com"
             className="text-sm text-text-muted hover:text-text-primary transition-colors"
           >
