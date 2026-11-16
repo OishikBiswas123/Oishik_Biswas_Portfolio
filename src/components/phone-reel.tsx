@@ -25,6 +25,23 @@ interface PhoneReelProps {
 const PHONE_W = 280
 const PHONE_H = PHONE_W * 19.5 / 9
 
+/** Poster frame extracted from each video (see public/Gallery/posters). */
+const posterFor = (src: string) =>
+  `/Gallery/posters/${(src.split("/").pop() ?? "").replace(/\.[^.]+$/, "")}.jpg`
+
+/**
+ * Play a video; if the browser blocks unmuted playback (autoplay policy),
+ * fall back to muted so playback never sticks on a black frame.
+ */
+const playWithFallback = (el: HTMLVideoElement | null, onFallback: () => void) => {
+  if (!el) return
+  el.play().catch(() => {
+    el.muted = true
+    onFallback()
+    el.play().catch(() => {})
+  })
+}
+
 export function PhoneReel({
   verticalVideos,
   horizontalVideo,
@@ -50,6 +67,10 @@ export function PhoneReel({
   const lastTransition = useRef(0)
   const [showOverlay, setShowOverlay] = useState(false)
   const [hideContent, setHideContent] = useState(false)
+  // Videos start with sound on. If a browser ever blocks unmuted playback
+  // (autoplay policy on non-gesture plays), playWithFallback retries muted
+  // so playback never sticks on a black frame.
+  const [isMuted, setIsMuted] = useState(false)
 
   const scrollToNextRef = useRef<(dir: number) => void>(() => {})
 
@@ -77,7 +98,7 @@ export function PhoneReel({
       const targetEl = videoRefs.current[newIdx]
       if (targetEl) {
         targetEl.currentTime = 0
-        targetEl.play().catch(() => {})
+        playWithFallback(targetEl, () => setIsMuted(true))
       }
     }
 
@@ -148,7 +169,6 @@ export function PhoneReel({
     }
   }
 
-  const [isMuted, setIsMuted] = useState(false)
   const [time, setTime] = useState("")
   const [quote, setQuote] = useState("")
 
@@ -207,7 +227,7 @@ export function PhoneReel({
     const el = videoRefs.current[index]
     if (!el) return
     if (el.paused) {
-      el.play().catch(() => {})
+      playWithFallback(el, () => setIsMuted(true))
       pausedByUser.current.delete(index)
     } else {
       el.pause()
@@ -220,14 +240,14 @@ export function PhoneReel({
       if (!el) return
       if (i === currentIndex) {
         if (!pausedByUser.current.has(i) && !hideContent) {
-          el.play().catch(() => {})
+          playWithFallback(el, () => setIsMuted(true))
         }
       } else {
         el.pause()
         el.currentTime = 0
       }
     })
-  }, [currentIndex])
+  }, [currentIndex, hideContent])
 
   useEffect(() => {
     const update = () => {
@@ -365,7 +385,7 @@ export function PhoneReel({
       const el = videoRefs.current[currentIndexRef.current]
       if (el && !pausedByUser.current.has(currentIndexRef.current)) {
         el.currentTime = 0
-        el.play().catch(() => {})
+        playWithFallback(el, () => setIsMuted(true))
       }
     }
     prevHideContent.current = hideContent
@@ -439,11 +459,12 @@ export function PhoneReel({
                 ) : (
                   <video
                     src={video.src}
+                    poster={posterFor(video.src)}
                     className="w-full h-full object-cover"
                     loop
                     playsInline
                     muted={isMuted}
-                    preload="metadata"
+                    preload={i === currentIndex ? "auto" : "metadata"}
                     ref={(el) => { videoRefs.current[i] = el }}
                   />
                 )}
@@ -499,12 +520,14 @@ export function PhoneReel({
             <video
               ref={(el) => { videoRefs.current[ROTATED_INDEX] = el }}
               src={horizontalVideo.src}
+              poster={posterFor(horizontalVideo.src)}
               className="w-full h-full object-cover"
               style={{ pointerEvents: "auto" }}
               autoPlay
               loop
               playsInline
               muted={isMuted}
+              preload="auto"
               onClick={() => togglePlay(ROTATED_INDEX)}
             />
             {isMobile && !locked && (
