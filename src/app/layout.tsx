@@ -1,11 +1,23 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Inter, Playfair_Display, PT_Serif } from "next/font/google"
 import { SmoothScrollProvider } from "@/components/smooth-scroll-provider"
 import "./globals.css"
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+})
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+})
+
+const ptSerif = PT_Serif({
+  variable: "--font-ptserif",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
 })
 
 export const metadata: Metadata = {
@@ -72,7 +84,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} theme-day`}>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${ptSerif.variable} theme-day`}>
       <body className="min-h-screen font-sans antialiased">
         <SmoothScrollProvider>
           {children}

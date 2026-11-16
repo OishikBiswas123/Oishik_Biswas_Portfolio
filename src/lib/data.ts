@@ -19,6 +19,9 @@ export interface BlogPost {
   date: string
   excerpt: string
   readTime: number
+  content?: string
+  coverImage?: string
+  cardImage?: string
 }
 
 export const projects: Project[] = [
@@ -224,7 +227,132 @@ export const skills = [
   "End-to-End Deployment",
 ]
 
-export const blogPosts: BlogPost[] = []
+export const blogPosts: BlogPost[] = [
+  {
+    slug: "the-daydreamers-gravity",
+    title: "The Daydreamer's Gravity: From Childhood Cartoons to the Edge of Spacetime",
+    date: "November 16, 2026",
+    excerpt:
+      "An hour on Interstellar's water planet costs Cooper seven years. A Doraemon episode gave me the same chills as a kid — and years later I chased that chill down to a square root in Einstein's equations.",
+    readTime: 6,
+    coverImage: "/blog/daydreamers-gravity/hero.webp",
+    cardImage: "/blog/daydreamers-gravity/gargantua.webp",
+    content: `Ever since I was a kid, I had a wild obsession with time machines.
+
+I wasn't just casually curious. I would spend entire afternoons lying on my bed, staring blankly at the ceiling, designing time machines in my head. I'd imagine spinning dials, flipping switches, and skipping past the boring parts of school or jumping back to fix an embarrassing mistake. In my head, I could escape anywhere.
+
+It felt amazing — until one day, reality hit me right in the face:
+
+> Just daydreaming about a time machine is never going to make one happen.
+
+Sitting in my room wishing for an impossible sci-fi gadget was just an escape hatch. Out there in the real world, thousands of brilliant physicists were spending decades doing brutal research, running complex simulations, and writing out equations to understand what time actually is. They were putting in the work. I was just sitting idle.
+
+That realization lit a fire under me. I stopped just daydreaming and actually picked up books, encyclopedias, and theories to see how the universe really works.
+
+## The Doraemon Episode That Scared Me
+
+My first real encounter with the weirdness of time didn't come from a textbook. It came from an episode of Doraemon.
+
+<Duo
+  src1="/blog/daydreamers-gravity/doraemon-1.webp"
+  alt1="Doraemon the Movie: Nobita and the Space Heroes poster"
+  src2="/blog/daydreamers-gravity/doraemon-2.webp"
+  alt2="Doraemon: Nobita Drifts in the Universe poster"
+  caption="The space-age Doraemon that made galaxies feel like a second home."
+/>
+
+If you watched the show growing up, you might remember this: a young astronaut says goodbye to his family and launches out on a space mission. He travels for what feels to him like just one single year. But when he lands back on Earth, 60 years have passed. His little child is now an old man, while he hasn't aged at all.
+
+As a kid watching that on TV, it gave me chills. It felt unfair, creepy, and impossible. How could one person experience one year while his family aged an entire lifetime?
+
+I brushed it off as cartoon logic — until years later, Christopher Nolan's *Interstellar* showed the exact same thing. When Cooper lands on the water planet near the black hole Gargantua, an hour on the surface costs him seven Earth years. When he finally gets back to the ship, his crewmate has grown old waiting for him.
+
+That wasn't cartoon magic. It was real physics: **Time Dilation**.
+
+## The Mistake I Made About Gravity and Time
+
+When I first started looking into this, my brain tried to make sense of it using simple school logic:
+
+- More gravity = slower time.
+- Less gravity = faster time.
+
+I thought: "Wait, isn't that just inversely proportional?"
+
+It turns out, nature doesn't work that way. Here is the difference:
+
+1. **In math, "proportional" means a straight line.** For two things to be proportional, they change by the exact same multiplier. Double your speed, and you cover double the distance (directly proportional). Double your speed, and the time it takes cuts cleanly in half (inversely proportional). Gravity and time do not follow this simple 1:1 rule.
+2. **Time "bends" instead of changing evenly.** When Einstein wrote the formula for gravitational time dilation, gravity and time were locked inside a square root:
+
+\`√(1 − 2GM/rc²)\`
+
+Because of that square root and the minus sign, the effect is non-linear: in everyday places like Earth, gravity is weak, so time barely changes at all — you don't notice it. But when gravity becomes insanely strong, time doesn't just slow down steadily — it drops off a cliff.
+
+## Why Black Holes Are the Ultimate Time Machines
+
+This is why a black hole has the most extreme time dilation in the entire universe.
+
+A black hole packs an unfathomable amount of mass into a microscopic point. Because of that density, its gravitational pull is so powerful that not even light can escape it.
+
+As you get closer to the edge of a black hole — the event horizon — the formula hits an extreme limit. Time doesn't just tick a little slower; from the point of view of someone watching you from far away, your time slows down toward infinity. Right at the boundary, your clock would practically appear frozen.
+
+<Duo
+  uniform
+  src1="/blog/daydreamers-gravity/gargantua.webp"
+  alt1="Gargantua — the black hole as imagined in Interstellar"
+  src2="/blog/daydreamers-gravity/m87-blackhole.webp"
+  alt2="M87* — the first real photograph of a black hole"
+  caption="Imagination vs. reality — Gargantua as rendered for Interstellar, beside M87*, the first real black hole photograph (Event Horizon Telescope, CC BY 4.0)."
+/>
+
+You wouldn't even need a sci-fi time machine. If you could somehow orbit right near the edge of a black hole for a couple of days and fly back, centuries would have raced past on Earth. You would step directly into the far future.
+
+## The Infinite Russian Doll: What is the Smallest Thing?
+
+Learning how gravity bends time across massive stars made me look in the complete opposite direction: the microscopic world.
+
+Back in school, teachers taught us that atoms were the absolute building blocks of everything. The smallest things in existence. We were so excited to learn that.
+
+Then, a little later, the textbooks updated: "Actually, atoms are made of protons, neutrons, and electrons."
+
+I immediately asked: "Wait. If something makes an atom, what makes the protons and electrons?"
+
+The teacher told me they were just made of charge, not solid little balls, and that was the end of it. My brain accepted it for a while, but I was never really satisfied. If something exists in reality, how could it just stop there?
+
+Years later in college, my mind was blown all over again when I learned about quarks, gluons, and leptons — the tiny entities hiding inside protons and neutrons. And the strangest part? Nobody has ever *seen* a quark. We only believe in them because the collider results and the math refuse to make sense without them.
+
+That's the part that keeps me up at night: the next layer is always there. We just haven't built the eyes to see it yet.
+
+At that point, I couldn't believe in a "smallest particle" anymore. If you find a tiny particle, it feels like it must still be made of something even smaller that we just don't have the technology to see yet.
+
+## Strings, Dimensions, and the Multiverse
+
+That endless question — what is inside the smallest thing? — is where String Theory steps in.
+
+String theory suggests that if you zoom in way past quarks, you don't find another little sphere. You find tiny vibrating loops of energy — strings. Just like a guitar string creates different musical notes depending on how it vibrates, these strings create different particles depending on their frequency. Vibrate one way, it's an electron. Vibrate another, it's a quark. The whole universe is basically cosmic music.
+
+The wild part? For the math of string theory to work, our world can't just have 3 dimensions of space and 1 of time. It requires 10 or 11 dimensions, curled up so small we can't detect them.
+
+And once you talk about extra dimensions, the Multiverse enters the conversation.
+
+In *Doctor Strange in the Multiverse of Madness*, Marvel used the idea that our dreams are actually windows into our alternate lives in other universes. Obviously, no experiment has ever shown that dreams are interdimensional TVs. But the physics behind the vibe is real: the **Many-Worlds Interpretation** is a serious interpretation of quantum mechanics that physicists still actively debate — every time a quantum outcome happens, reality might branch into parallel timelines. Somewhere out there, an infinite number of alternate possibilities might be playing out.
+
+## The Future Belongs to the Rule-Breakers
+
+At the end of the day, I don't care what the textbooks say is "impossible" right now.
+
+I genuinely believe that time travel and teleportation are going to be real.
+
+Right now, if you bring this up in a room full of serious people, nobody agrees with you. Current science draws a thick red line and says, "Never going to happen. The energy is too high, the paradoxes are broken, the math forbids it."
+
+I get why they say that. Because right now, we are working with incomplete puzzles.
+
+Every generation thinks they have the final rulebook of the universe — until one day, another revolutionary physicist or mathematician steps onto the scene, invents a completely new formula we haven't even imagined yet, and shatters everything the "experts" thought they knew.
+
+The exact same science that calls it impossible today will be the science that proves it tomorrow.
+
+Until that day comes, I'm going to keep reading, keep researching, and keep dreaming. Because the people crazy enough to believe in the impossible are usually the ones who end up building it.`,
+  },
+]
 
 export const personalInfo = {
   name: "Oishik Biswas",

@@ -13,6 +13,8 @@
 
   --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-playfair);
+  --font-newsprint: var(--font-ptserif);
 }
 
 html {
@@ -23,6 +25,34 @@ html {
 body {
   background: var(--bg-base);
   color: var(--text-primary);
+}
+
+/* ——— Newspaper (blog) styles ——— */
+.paper-sheet {
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(0, 0, 0, 0.035), transparent 55%),
+    radial-gradient(ellipse at 85% 90%, rgba(0, 0, 0, 0.05), transparent 50%),
+    #f6f1e3;
+  color: #2b251d;
+  box-shadow: 0 24px 60px -18px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.paper-body p:first-of-type::first-letter {
+  font-family: var(--font-playfair), serif;
+  font-weight: 700;
+  font-size: 3.6em;
+  line-height: 0.85;
+  float: left;
+  padding-right: 0.12em;
+  padding-top: 0.08em;
+  color: #1f1a14;
+}
+
+.paper-smallcaps {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.68rem;
+  font-weight: 700;
 }
 
 /* ── Cloud drift keyframes (4 speeds) ── */
