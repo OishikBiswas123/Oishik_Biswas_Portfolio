@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useEffect } from "react"
-import { motion } from "framer-motion"
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion"
 import Link from "next/link"
 import { LetterHoverText } from "@/components/letter-hover-text"
 import { Bees } from "@/components/bees"
@@ -9,6 +9,17 @@ import { LightMotes } from "@/components/light-motes"
 import { GreetingCycler } from "@/components/greeting-cycler"
 export function HeroSection() {
   const meadowRef = useRef<HTMLDivElement>(null)
+  const heroRef = useRef<HTMLElement>(null)
+  const reduceMotion = useReducedMotion()
+
+  // Meadow parallax ascent (gauravi-style): as the hero scrolls off, the
+  // meadow rises, gently zooms from its bottom edge, and fades into the sky.
+  // Transform + opacity only — never touches layout, so responsive
+  // breakpoints are unaffected.
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] })
+  const meadowScale = useTransform(scrollYProgress, [0, 1], [1, 1.14])
+  const meadowY = useTransform(scrollYProgress, [0, 1], ["0%", "-46%"])
+  const meadowOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.2])
 
   useEffect(() => {
     const el = meadowRef.current
@@ -34,20 +45,25 @@ export function HeroSection() {
   }, [])
 
   return (
-    <section id="hero" className="relative min-h-screen flex flex-col justify-center px-8 md:px-16 lg:px-24 scroll-mt-16 overflow-x-hidden md:overflow-x-visible">
+    <section id="hero" ref={heroRef} className="relative min-h-screen flex flex-col justify-center px-8 md:px-16 lg:px-24 scroll-mt-16 overflow-x-hidden md:overflow-x-visible">
       <LightMotes />
       <Bees />
-      <div ref={meadowRef} className="absolute z-0 pointer-events-none select-none overflow-hidden md:overflow-visible" style={{ left: '-36px', width: 'calc(100vw + 72px)', bottom: 0 }}>
-        <img
-          src="/meadow/medows.png"
-          alt=""
-          loading="lazy"
-          className="w-full h-auto scale-[2.5] md:scale-100 origin-bottom"
-          style={{
-            WebkitMaskImage: "linear-gradient(to bottom, black 78%, transparent 100%)",
-            maskImage: "linear-gradient(to bottom, black 78%, transparent 100%)",
-          }}
-        />
+      <div ref={meadowRef} className="absolute z-0 pointer-events-none select-none overflow-hidden md:overflow-visible" style={{ left: '-36px', width: 'calc(100vw + 72px)', bottom: 0, overflowX: "clip" }}>
+        <motion.div
+          className="w-full overflow-hidden will-change-transform"
+          style={reduceMotion ? undefined : { scale: meadowScale, y: meadowY, opacity: meadowOpacity, transformOrigin: "50% 100%" }}
+        >
+          <img
+            src="/meadow/medows.png"
+            alt=""
+            loading="lazy"
+            className="w-full h-auto scale-[2.5] md:scale-100 origin-bottom"
+            style={{
+              WebkitMaskImage: "linear-gradient(to bottom, black 78%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 78%, transparent 100%)",
+            }}
+          />
+        </motion.div>
       </div>
       <div className="relative max-w-3xl z-10">
         <motion.p
