@@ -6,6 +6,7 @@ import Link from "next/link"
 import { LetterHoverText } from "@/components/letter-hover-text"
 import { Bees } from "@/components/bees"
 import { LightMotes } from "@/components/light-motes"
+import { GreetingCycler } from "@/components/greeting-cycler"
 export function HeroSection() {
   const meadowRef = useRef<HTMLDivElement>(null)
 
@@ -57,6 +58,16 @@ export function HeroSection() {
           style={{ textShadow: "var(--hero-shadow)" }}
         >
           Developer & Creator
+        </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.05, ease: "easeOut" }}
+          className="text-lg sm:text-2xl text-text-secondary mt-3"
+          style={{ textShadow: "var(--hero-shadow)" }}
+        >
+          <GreetingCycler />, I am
         </motion.p>
 
         <motion.h1
