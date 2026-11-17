@@ -21,16 +21,19 @@ export function curtainNavigate(href: string) {
   else window.location.href = href
 }
 
-function phraseFor(pathname: string): string {
+function phraseFor(pathname: string, hash?: string): string {
   const clean = (pathname || "/").split("#")[0].split("?")[0]
   const normalized = clean.length > 1 && clean.endsWith("/") ? clean.slice(0, -1) : clean
+  const h = (hash || "").replace(/^#/, "").toLowerCase()
   for (const item of curtainPhrases) {
-    if (item.prefix === "/") continue
-    if (normalized === item.prefix || normalized.startsWith(`${item.prefix}/`)) {
-      return item.phrase
+    if (item.prefix !== "/" && normalized !== item.prefix && !normalized.startsWith(`${item.prefix}/`)) {
+      continue
     }
+    if (item.exact && normalized !== item.prefix) continue
+    if (item.hash && item.hash !== h) continue
+    return item.phrase
   }
-  return curtainPhrases.find((item) => item.prefix === "/")?.phrase ?? "hello, daydreamer."
+  return "hello, daydreamer."
 }
 
 export function CurtainTransition() {
@@ -90,7 +93,7 @@ export function CurtainTransition() {
       }
       busyRef.current = true
       setInitialY("-102%")
-      setPhrase(phraseFor(url.pathname))
+      setPhrase(phraseFor(url.pathname, url.hash))
       targetPathRef.current = url.pathname
       setPhase("closing")
       router.push(`${url.pathname}${url.search}${url.hash}`)
@@ -154,7 +157,7 @@ export function CurtainTransition() {
       if (busyRef.current) return
       busyRef.current = true
       setInitialY("0%")
-      setPhrase(phraseFor(window.location.pathname))
+      setPhrase(phraseFor(window.location.pathname, window.location.hash))
       targetPathRef.current = window.location.pathname
       setPhase("covered")
       const safety = window.setTimeout(() => {

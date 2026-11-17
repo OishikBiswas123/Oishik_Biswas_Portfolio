@@ -372,13 +372,20 @@ export const personalInfo = {
 export interface CurtainPhrase {
   /** Route prefix this phrase belongs to. "/" catches every other route. */
   prefix: string
+  /** Optional #section on the page (e.g. "projects" for /#projects). */
+  hash?: string
+  /** When true, only the exact prefix matches (deeper paths fall through). */
+  exact?: boolean
   phrase: string
 }
 
 export const curtainPhrases: CurtainPhrase[] = [
+  { prefix: "/", hash: "projects", phrase: "the work speaks." },
+  { prefix: "/", hash: "contact", phrase: "let's talk." },
   { prefix: "/projects", phrase: "built with obsession." },
+  { prefix: "/blog", phrase: "for the love of wondering.", exact: true },
+  { prefix: "/blog", phrase: "the daydreamer's gravity." },
   { prefix: "/gallery", phrase: "the spotlight's warm." },
-  { prefix: "/blog", phrase: "for the love of wondering." },
   { prefix: "/about", phrase: "the human behind the code." },
   { prefix: "/", phrase: "hello, daydreamer." },
 ]
