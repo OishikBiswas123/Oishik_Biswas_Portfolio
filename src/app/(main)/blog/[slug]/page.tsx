@@ -217,12 +217,12 @@ export default async function BlogPostPage({
             {post.title}
           </h1>
 
-          <div className="mt-6 flex items-center justify-center gap-4">
-            <span className="h-px w-12 bg-[#2b251d]/50" />
-            <span className="text-xs sm:text-sm font-bold uppercase tracking-[0.28em] text-[#1f1a14]">
+          <div className="mt-6 flex items-center justify-center gap-2 sm:gap-4">
+            <span className="h-px w-4 sm:w-12 bg-[#2b251d]/50" />
+            <span className="whitespace-nowrap text-xs sm:text-sm font-bold uppercase tracking-[0.18em] sm:tracking-[0.28em] text-[#1f1a14]">
               By Oishik Biswas
             </span>
-            <span className="h-px w-12 bg-[#2b251d]/50" />
+            <span className="h-px w-4 sm:w-12 bg-[#2b251d]/50" />
           </div>
 
           <p className="mt-6 text-center font-newsprint text-base sm:text-lg italic text-[#2b251d]/90">
