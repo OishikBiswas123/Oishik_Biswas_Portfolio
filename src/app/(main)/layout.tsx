@@ -1,6 +1,7 @@
 import { SkyThemeProvider } from "@/components/sky-theme-provider"
 import { Sidebar } from "@/components/sidebar"
 import { Footer } from "@/components/footer"
+import { AskAI } from "@/components/ask-ai"
 
 export default function MainLayout({
   children,
@@ -14,6 +15,7 @@ export default function MainLayout({
         <main className="flex-1">{children}</main>
         <Footer />
       </div>
+      <AskAI />
     </SkyThemeProvider>
   )
 }
