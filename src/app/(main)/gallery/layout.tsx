@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { SkyBackground } from "@/components/sky-background"
 
 export const metadata: Metadata = {
   title: "Gallery — Oishik Biswas",
@@ -12,5 +13,10 @@ export default function GalleryLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return children
+  return (
+    <>
+      <SkyBackground />
+      {children}
+    </>
+  )
 }
