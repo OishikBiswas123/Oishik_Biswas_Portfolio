@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Inter, Playfair_Display, PT_Serif } from "next/font/google"
 import { SmoothScrollProvider } from "@/components/smooth-scroll-provider"
+import { CurtainTransition } from "@/components/curtain-transition"
 import "./globals.css"
 
 const inter = Inter({
@@ -92,6 +93,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${ptSerif.variable} theme-day`}>
       <body className="min-h-screen font-sans antialiased">
         <SmoothScrollProvider>
+          <CurtainTransition />
           {children}
         </SmoothScrollProvider>
       </body>

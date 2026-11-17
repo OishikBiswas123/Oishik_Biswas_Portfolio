@@ -368,3 +368,17 @@ export const personalInfo = {
     instagram: "https://instagram.com/the.oishikbiswas",
   },
 }
+
+export interface CurtainPhrase {
+  /** Route prefix this phrase belongs to. "/" catches every other route. */
+  prefix: string
+  phrase: string
+}
+
+export const curtainPhrases: CurtainPhrase[] = [
+  { prefix: "/projects", phrase: "built with obsession." },
+  { prefix: "/gallery", phrase: "the spotlight's warm." },
+  { prefix: "/blog", phrase: "for the love of wondering." },
+  { prefix: "/about", phrase: "the human behind the code." },
+  { prefix: "/", phrase: "hello, daydreamer." },
+]

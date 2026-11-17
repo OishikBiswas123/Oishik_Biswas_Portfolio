@@ -362,3 +362,10 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Curtain transition: skip entirely for visitors who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .curtain-overlay {
+    display: none !important;
+  }
+}

@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState, useCallback, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { curtainNavigate } from "@/components/curtain-transition"
 import { motion } from "framer-motion"
 import { Music, Mic, Headphones, Film, Play, Pause } from "lucide-react"
 
@@ -12,7 +12,6 @@ const audioCards = [
 ] as const
 
 export function HobbiesSection({ stopKey = 0, onPlay }: { stopKey?: number; onPlay?: () => void }) {
-  const router = useRouter()
   const [playing, setPlaying] = useState<string | null>(null)
   const [paused, setPaused] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -186,7 +185,7 @@ export function HobbiesSection({ stopKey = 0, onPlay }: { stopKey?: number; onPl
               <motion.button
                 onClick={(e) => {
                   e.stopPropagation()
-                  router.push("/gallery")
+                  curtainNavigate("/gallery")
                 }}
                 className="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider text-text-primary bg-white/20 dark:bg-white/10 hover:bg-white/30 dark:hover:bg-white/20 border border-white/20 rounded-full px-4 py-2 transition-all"
                 whileHover={{ gap: "10px" }}
