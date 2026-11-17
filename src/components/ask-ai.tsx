@@ -1,7 +1,8 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
+import { AnimatePresence, motion, useDragControls, useMotionValue } from "framer-motion"
+import Image from "next/image"
 import { Send, Volume2, VolumeX, X } from "lucide-react"
 
 /**
@@ -49,6 +50,103 @@ export function AskAI() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const abortRef = useRef<AbortController | null>(null)
+
+  /* ── draggable launcher (hold 1s to drag; quick tap opens) ── */
+  const POS_KEY = "ask-ai-pos"
+  const launcherRef = useRef<HTMLButtonElement>(null)
+  const dragControls = useDragControls()
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+  const [grabbed, setGrabbed] = useState(false)
+  const [constraints, setConstraints] = useState({ left: 0, right: 0, top: 0, bottom: 0 })
+  const grabTimer = useRef<number | null>(null)
+  const dragHappened = useRef(false)
+  const grabbedRef = useRef(false)
+
+  const MARGIN = 8
+
+  const clampToViewport = useCallback(() => {
+    const el = launcherRef.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    let nx = x.get()
+    if (r.left < MARGIN) nx += MARGIN - r.left
+    if (r.right > window.innerWidth - MARGIN) nx -= r.right - (window.innerWidth - MARGIN)
+    x.set(nx)
+    let ny = y.get()
+    if (r.top < MARGIN) ny += MARGIN - r.top
+    if (r.bottom > window.innerHeight - MARGIN) ny -= r.bottom - (window.innerHeight - MARGIN)
+    y.set(ny)
+  }, [x, y])
+
+  // dragConstraints values are relative to the button's untransformed
+  // (top-right) anchor, so measure the origin by subtracting current offsets.
+  const computeConstraints = useCallback(() => {
+    const el = launcherRef.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    const originLeft = r.left - x.get()
+    const originTop = r.top - y.get()
+    setConstraints({
+      left: MARGIN - originLeft,
+      right: window.innerWidth - MARGIN - originLeft - r.width,
+      top: MARGIN - originTop,
+      bottom: window.innerHeight - MARGIN - originTop - r.height,
+    })
+  }, [x, y])
+
+  const savePosition = useCallback(() => {
+    try {
+      localStorage.setItem(POS_KEY, JSON.stringify({ x: x.get(), y: y.get() }))
+    } catch {
+      // storage unavailable (private mode) — position just won't persist
+    }
+  }, [x, y])
+
+  // restore a saved position, then measure clamping bounds
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(POS_KEY)
+      if (raw) {
+        const p = JSON.parse(raw) as { x?: number; y?: number }
+        if (typeof p.x === "number") x.set(p.x)
+        if (typeof p.y === "number") y.set(p.y)
+      }
+    } catch {
+      // ignore malformed storage
+    }
+    computeConstraints()
+    const onResize = () => {
+      clampToViewport()
+      computeConstraints()
+    }
+    window.addEventListener("resize", onResize)
+    return () => window.removeEventListener("resize", onResize)
+  }, [computeConstraints, clampToViewport, x, y])
+
+  const startHold = (e: React.PointerEvent) => {
+    dragHappened.current = false
+    grabTimer.current = window.setTimeout(() => {
+      grabbedRef.current = true
+      setGrabbed(true)
+      dragControls.start(e)
+    }, 1000)
+  }
+
+  const endHold = () => {
+    if (grabTimer.current) {
+      window.clearTimeout(grabTimer.current)
+      grabTimer.current = null
+    }
+  }
+
+  const releaseHold = () => {
+    endHold()
+    if (grabbedRef.current) {
+      grabbedRef.current = false
+      setGrabbed(false)
+    }
+  }
 
   /* ── scroll chat to bottom on new content ── */
   useEffect(() => {
@@ -188,24 +286,68 @@ export function AskAI() {
   const launcher = (
     <motion.button
       type="button"
-      onClick={() => setOpen(true)}
-      aria-label="Ask Oishik's AI"
-      className="group fixed right-5 bottom-[5.5rem] md:bottom-5 z-50 flex items-center rounded-full px-5 py-3 shadow-lg cursor-pointer select-none"
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.4 }}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      aria-label="Ask AI about Oishik's work"
+      drag
+      dragListener={false}
+      dragControls={dragControls}
+      dragConstraints={constraints}
+      dragMomentum={false}
+      dragElastic={0}
+      onPointerDown={startHold}
+      onPointerUp={releaseHold}
+      onPointerCancel={endHold}
+      onPointerLeave={endHold}
+      onDragStart={() => {
+        dragHappened.current = true
+      }}
+      onDragEnd={() => {
+        clampToViewport()
+        computeConstraints()
+        savePosition()
+        releaseHold()
+      }}
+      onClick={() => {
+        if (grabbedRef.current || dragHappened.current) return
+        setOpen(true)
+      }}
+      animate={grabbed ? { scale: 1.12 } : { scale: 1 }}
+      whileHover={grabbed ? undefined : { scale: 1.05 }}
+      transition={{ duration: 0.2 }}
+      ref={launcherRef}
+      className="group fixed top-10 right-5 z-50 flex items-center gap-2 rounded-full pl-2 pr-5 py-2 shadow-lg select-none"
       style={{
+        x,
+        y,
+        touchAction: "none",
+        cursor: grabbed ? "grabbing" : "pointer",
         background: "linear-gradient(135deg, color-mix(in srgb, var(--sky2) 85%, transparent), color-mix(in srgb, var(--sky1) 90%, transparent))",
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
         border: "1px solid color-mix(in srgb, var(--text-primary) 18%, transparent)",
-        color: "var(--text-primary)",
-        textShadow: "var(--hero-shadow)",
+        boxShadow: grabbed
+          ? "0 0 0 6px color-mix(in srgb, var(--sun-mid) 40%, transparent), 0 12px 32px rgba(0,0,0,0.35)"
+          : undefined,
       }}
     >
-      <span className="text-sm font-medium tracking-wide">ask Oishik&apos;s AI</span>
+      <span
+        className="w-7 h-7 rounded-full overflow-hidden shrink-0"
+        style={{ boxShadow: "0 0 0 1.5px color-mix(in srgb, var(--text-primary) 30%, transparent)" }}
+      >
+        <Image
+          src="/pfp/photo-1.jpg"
+          alt=""
+          width={28}
+          height={28}
+          className="w-full h-full object-cover"
+          draggable={false}
+        />
+      </span>
+      <span
+        className="text-sm font-medium tracking-wide"
+        style={{ color: "var(--text-primary)", textShadow: "var(--hero-shadow)" }}
+      >
+        ask AI
+      </span>
     </motion.button>
   )
 
